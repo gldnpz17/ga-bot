@@ -13,10 +13,10 @@ module.exports.initializeConversation = async (groupChatId) => {
 module.exports.removeConversation = async (groupChatId) => {
   await new Models.GroupChatConfig.deleteOne({ groupChatId: groupChatId }).exec();
 
-  console.log(`Conversation removed. groupChatId: ${groupChatId}`)
+  console.log(`Conversation removed. groupChatId: ${groupChatId}`);
 };
 
-module.exports.listConfiguration = async (groupChatId) => {
+module.exports.listConfigurations = async (groupChatId) => {
   let chatConfig = await Models.GroupChatConfig.findOne({ groupChatId: groupChatId }).exec();
 
   if (chatConfig !== null) {
@@ -24,7 +24,7 @@ module.exports.listConfiguration = async (groupChatId) => {
 
     return chatConfig.configs;
   }
-}
+};
 
 module.exports.addConfiguration = async (groupChatId, configItem) => {
   let chatConfig = await Models.GroupChatConfig.findOne({ groupChatId: groupChatId }).exec();
@@ -40,4 +40,19 @@ module.exports.addConfiguration = async (groupChatId, configItem) => {
   await chatConfig.save();
 
   console.log(`Added config. config: ${configItem}`);
+};
+
+module.exports.removeConfiguration = async (groupChatId, configItemName) => {
+  let chatConfig = await Models.GroupChatConfig.findOne({ groupChatId: groupChatId }).exec();
+
+  let index = chatConfig.configs.findIndex(config => config.name === configItemName);
+  if (index !== -1) {
+    chatConfig.configs.splice(index, 1);
+
+    await chatConfig.save();
+
+    console.log(`Removed config. config: ${configItemName}`);
+  } else {
+    throw new Error('Configuration not found.');
+  }
 }
