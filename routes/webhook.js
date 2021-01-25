@@ -13,7 +13,7 @@ const lineClient = new line.Client(lineConfig);
 const configureBotUseCase = require('../use-cases/configure-bot');
 const processMessageUseCase = require('../use-cases/process-message');
 
-router.post('/webhook', line.middleware(lineConfig), async (req, res, next) => {
+router.post('/', line.middleware(lineConfig), async (req, res, next) => {
   req.body.events.map(event => {
     if (event.type === 'message' && event.message?.type === 'text') {
       let regex = new RegExp(`^${config.botName}.*`);
