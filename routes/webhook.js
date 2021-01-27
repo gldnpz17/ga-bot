@@ -58,7 +58,7 @@ router.post('/', async (req, res) => {
             break;
   
           case 'remove-configuration':
-            await configureBotUseCase.removeConfigurations(groupId, event.command.value);
+            await configureBotUseCase.removeConfiguration(groupId, event.command.value);
   
             lineClient.replyMessage(event.replyToken, {
               type: 'text',
@@ -74,7 +74,7 @@ router.post('/', async (req, res) => {
             break;
         }
       } else if (event.type === 'message' && event.message.type === 'text') {
-        reply = await processMessageUseCase.replyToMessage(groupId, event.message.text);
+        let reply = await processMessageUseCase.replyToMessage(groupId, event.message.text);
 
         console.log(`Received reply: ${reply}. Sending...`);
         if (reply !== null) {
