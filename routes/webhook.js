@@ -37,7 +37,7 @@ router.post('/', async (req, res) => {
         });
       } else if (event.type === 'leave') {
         configureBotUseCase.removeConversation(groupId);
-      } else if (event.command !== null) {
+      } else if (event.command !== null || event.command !== undefined) {
         switch (event.command.name) {
           case 'add-configuration':
             await configureBotUseCase.addConfiguration(groupId, JSON.parse(event.command.body));
