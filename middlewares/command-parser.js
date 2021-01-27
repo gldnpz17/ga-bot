@@ -23,7 +23,7 @@ module.exports.commandParser = async (req, res, next) => {
             if(args.length > 0) {
               event.command = {
                 name: args[0],
-                value: args[--args.length],
+                value: args[args.length - 1],
                 body: event.message.text.substr(event.message.text.indexOf('\n'))
               }
             } else {

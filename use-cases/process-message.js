@@ -13,7 +13,7 @@ module.exports.replyToMessage = async (groupChatId, message) => {
         return config.reply;
       }
     });
+  } else {
+    return null;
   }
-
-  return null;
 }

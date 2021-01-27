@@ -58,6 +58,7 @@ router.post('/', async (req, res) => {
             break;
   
           case 'remove-configuration':
+            console.log(`Attempting to remove configuration ${event.command.value}`);
             await configureBotUseCase.removeConfiguration(groupId, event.command.value);
   
             lineClient.replyMessage(event.replyToken, {
