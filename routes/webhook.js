@@ -1,4 +1,4 @@
-const config = require('./config');
+const config = require('../config');
 
 let express = require('express');
 let router = express.Router();
@@ -12,41 +12,10 @@ const lineClient = new line.Client(lineConfig);
 
 const configureBotUseCase = require('../use-cases/configure-bot');
 const processMessageUseCase = require('../use-cases/process-message');
+const { commandParser } = require('../middlewares/command-parser');
 
-router.post('/', line.middleware(lineConfig), async (req, res, next) => {
-  req.body.events.map(event => {
-    if (event.type === 'message' && event.message?.type === 'text') {
-      let regex = new RegExp(`^${config.botName}.*`);
-
-      if (regex.test(event.message.text)) {
-        try {
-          let args = event.message.text.match(/(.*?)\n/)[1].split(' ');
-          args.splice(0, 1);
-    
-          if(args.length > 0) {
-            event.command = {
-              name: args[0],
-              value: args[--args.length],
-              body: event.message.text.substr(event.message.text.indexOf('\n'))
-            }
-          } else {
-            throw new Error(`Error parsing command. message: ${event.message.text}`);
-          }
-        } catch(err) {
-          console.log(err);
-
-          await lineClient.replyMessage(event.replyToken, {
-            type: 'text',
-            text: 'Error parsing command.'
-          });
-        } 
-      }
-    }
-
-    next()
-  });
-}, async (req, res) => {
-  req.body.events.map(event => {
+router.post('/',  line.middleware(lineConfig), commandParser, async (req, res) => {
+  req.body.events.map(async (event) => {
     let groupId = event.source.groupId;
     if (groupId === null) {
       lineClient.replyMessage(event.replyToken, {
