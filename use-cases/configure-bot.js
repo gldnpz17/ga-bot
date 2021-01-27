@@ -33,6 +33,7 @@ module.exports.addConfiguration = async (groupChatId, configItem) => {
   // If there's already a config with the same name, remove the old one.
   let index = chatConfig.configs.findIndex(config => config.name === configItem.name);
   if (index !== -1) {
+    console.log(`Removed config. config name: ${configItem.name}`);
     chatConfig.configs.splice(index, 1);
   }
 
