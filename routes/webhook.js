@@ -53,7 +53,7 @@ router.post('/', async (req, res) => {
   
             lineClient.replyMessage(event.replyToken, {
               type: 'text',
-              text: JSON.stringify(result)
+              text: JSON.stringify(result, null, 2);
             });
             break;
   
