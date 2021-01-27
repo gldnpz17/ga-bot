@@ -86,10 +86,7 @@ router.post('/', async (req, res) => {
 
       return;
     } catch(err) {
-      lineClient.replyMessage(event.replyToken, {
-        type: 'text',
-        text: err.message
-      });
+      console.log(err.message);
 
       return;
     }
