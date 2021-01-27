@@ -38,9 +38,9 @@ app.use(function(err, req, res, next) {
   console.log(err.stack);
 });
 
-app.listen(config.port, () => {
+/*app.listen(config.port, () => {
   console.log(`App started. Listening to port ${config.port}`);
   console.log(`Configs: ${JSON.stringify(config)}`);
-});
+});*/
 
 module.exports = app;
