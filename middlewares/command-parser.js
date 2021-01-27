@@ -1,3 +1,5 @@
+const config = require('../config');
+
 module.exports.commandParser = async (req, res, next) => {
   try {
     req.body.events.map(async (event) => {
