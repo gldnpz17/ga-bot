@@ -34,6 +34,17 @@ module.exports.addConfiguration = async (groupChatId, configItem) => {
     throw new ApplicationError('configName may not contain any whitespace characters.');
   }
 
+  //check for null/undefined fields
+  if (configItem.configName === null || configItem.configName === undefined) {
+    throw new ApplicationError('Invalid configuration. configName ca\'nt be empty.');
+  };
+  if (configItem.regex === null || configItem.regex === undefined) {
+    throw new ApplicationError('Invalid configuration. regex ca\'nt be empty.');
+  };
+  if (configItem.reply === null || configItem.reply === undefined) {
+    throw new ApplicationError('Invalid configuration. \'reply\' ca\'nt be empty.');
+  };
+
   let chatConfig = await Models.GroupChatConfig.findOne({ groupChatId: groupChatId }).exec();
 
   // If there's already a config with the same name, remove the old one.
@@ -61,6 +72,6 @@ module.exports.removeConfiguration = async (groupChatId, configItemName) => {
 
     console.log(`Removed config. config: ${configItemName}`);
   } else {
-    throw new ApplicationError(`Configuration \'${configItemName}\'not found.`);
+    throw new ApplicationError(`Configuration \'${configItemName}\' not found.`);
   }
 }

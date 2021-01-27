@@ -34,7 +34,7 @@ router.post('/', async (req, res) => {
 
         lineClient.pushMessage(groupId, {
           type: 'text',
-          text: '[Bot initialization complete]\nHello there! o/\n\nThe guide on how to use this bot is in the github repo: short.gldnpz.com/BacodBotRepo'
+          text: '[Bot initialization complete]\nHello there! o/\n\nType `@BacodBot help` if you need help.'
         });
       } else if (event.type === 'leave') {
         configureBotUseCase.removeConversation(groupId);
@@ -68,10 +68,17 @@ router.post('/', async (req, res) => {
             });
             break;
 
+          case 'help':
+            lineClient.replyMessage(event.replyToken, {
+              type: 'text',
+              text: 'How to use:\nhttps://github.com/gldnpz17/bacod-bot\n\nRegex article:\nhttps://en.wikipedia.org/wiki/Regular_expression'
+            });
+            break;
+
           default: 
             lineClient.replyMessage(event.replyToken, {
               type: 'text',
-              text: 'Command unknown.'
+              text: 'Command unknown. Type `@BacodBot help` if you need some help.'
             });
             break;
         }
