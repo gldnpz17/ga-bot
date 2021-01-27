@@ -1,3 +1,4 @@
+const ApplicationError = require('../common/application-error');
 const Models = require('../models/models');
 
 module.exports.initializeConversation = async (groupChatId) => {
@@ -28,6 +29,11 @@ module.exports.listConfigurations = async (groupChatId) => {
 };
 
 module.exports.addConfiguration = async (groupChatId, configItem) => {
+  //check for whitespace
+  if (/\s/.test(configItem)) {
+    throw new ApplicationError('configName may not contain any whitespace characters.');
+  }
+
   let chatConfig = await Models.GroupChatConfig.findOne({ groupChatId: groupChatId }).exec();
 
   // If there's already a config with the same name, remove the old one.
@@ -55,6 +61,6 @@ module.exports.removeConfiguration = async (groupChatId, configItemName) => {
 
     console.log(`Removed config. config: ${configItemName}`);
   } else {
-    throw new Error(`Configuration \'${configItemName}\'not found.`);
+    throw new ApplicationError(`Configuration \'${configItemName}\'not found.`);
   }
 }

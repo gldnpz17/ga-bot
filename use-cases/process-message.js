@@ -10,7 +10,7 @@ module.exports.replyToMessage = async (groupChatId, message) => {
 
       // Invalid flags
       if (m[3] && !/^(?!.*?(.).*?\1)[gmixXsuUAJ]+$/.test(m[3])) {
-          return RegExp(input);
+        return RegExp(input);
       }
 
       // Create the regular expression

@@ -15,6 +15,7 @@ const processMessageUseCase = require('../use-cases/process-message');
 const { commandParser } = require('../middlewares/command-parser');
 const { signatureValidator } = require('../middlewares/signature-validator');
 const { requestLogger } = require('../middlewares/request-logger');
+const ApplicationError = require('../common/application-error');
 
 router.post('/', async (req, res) => {
   req.body.events.map(async (event) => {
@@ -33,7 +34,7 @@ router.post('/', async (req, res) => {
 
         lineClient.pushMessage(groupId, {
           type: 'text',
-          text: '[Bot initialization complete]\nHello there! o/\n\nThe guide on how to use this bot is in the github repo: https://github.com/gldnpz17/bacod-bot'
+          text: '[Bot initialization complete]\nHello there! o/\n\nThe guide on how to use this bot is in the github repo: short.gldnpz.com/BacodBotRepo'
         });
       } else if (event.type === 'leave') {
         configureBotUseCase.removeConversation(groupId);
@@ -91,6 +92,13 @@ router.post('/', async (req, res) => {
     } catch(err) {
       console.log(err.message);
       console.log(JSON.stringify(err.stack));
+
+      if (err instanceof ApplicationError) {
+        lineClient.replyMessage(event.replyToken, {
+          type: 'text',
+          text: reply
+        });
+      }
 
       return;
     }
