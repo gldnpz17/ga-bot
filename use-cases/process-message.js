@@ -5,7 +5,8 @@ module.exports.replyToMessage = async (groupChatId, message) => {
 
   if (chatConfig.configs.length !== 0) {
     const stringToRegex = (string) => {
-      var match = /^\/(.*)\/([a-z]*)$/.exec(string);
+      let match = /^\/(.*)\/([a-z]*)$/.exec(string);
+      
       return new RegExp(match[1], match[2]);
     };
 
@@ -13,7 +14,7 @@ module.exports.replyToMessage = async (groupChatId, message) => {
     
     if (configIndex !== -1) {
       console.log(`Replied to \'${message}\' with \'${chatConfig.configs[configIndex].reply}\'.`);
-      
+
       return chatConfig.configs[configIndex].reply;
     } else {
       return null;

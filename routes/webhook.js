@@ -90,6 +90,7 @@ router.post('/', async (req, res) => {
       return;
     } catch(err) {
       console.log(err.message);
+      console.log(JSON.stringify(err.stack));
 
       return;
     }
