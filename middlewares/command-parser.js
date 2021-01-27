@@ -32,6 +32,8 @@ module.exports.commandParser = async (req, res, next) => {
             });
           } 
         }
+      } else {
+        event.command = null;
       }
   
       next()
