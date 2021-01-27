@@ -13,7 +13,7 @@ module.exports.initializeConversation = async (groupChatId) => {
 };
 
 module.exports.removeConversation = async (groupChatId) => {
-  await new Models.GroupChatConfig.deleteOne({ groupChatId: groupChatId }).exec();
+  await Models.GroupChatConfig.deleteOne({ groupChatId: groupChatId }).exec();
 
   console.log(`Conversation removed. groupChatId: ${groupChatId}`);
 };
