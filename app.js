@@ -19,9 +19,9 @@ var app = express();
 
 app.use(logger('dev'));
 app.use('/webhook', webhookRouter);
-app.use((err, req, res, next) => {
+app.use(function(err, req, res, next) {
   console.log(err.stack);
-})
+});
 //app.use(express.json());
 //app.use(express.urlencoded({ extended: false }));
 //app.use(cookieParser());

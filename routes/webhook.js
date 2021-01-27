@@ -13,8 +13,9 @@ const lineClient = new line.Client(lineConfig);
 const configureBotUseCase = require('../use-cases/configure-bot');
 const processMessageUseCase = require('../use-cases/process-message');
 const { commandParser } = require('../middlewares/command-parser');
+const { signatureValidator } = require('../middlewares/signature-validator');
 
-router.post('/',  line.middleware(lineConfig), commandParser, async (req, res) => {
+router.post('/', signatureValidator, line.middleware(lineConfig), commandParser, async (req, res) => {
   req.body.events.map(async (event) => {
     let groupId = event.source.groupId;
     if (groupId === null) {
@@ -93,3 +94,5 @@ router.post('/',  line.middleware(lineConfig), commandParser, async (req, res) =
     }
   });
 });
+
+module.exports = router;
