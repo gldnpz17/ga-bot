@@ -4,7 +4,7 @@ module.exports.commandParser = async (req, res, next) => {
       return;
     }
     if (event.type === 'message' && event.message.type === 'text') {
-      let regex = new RegExp(`^${config.botName}.*`);
+      let regex = new RegExp(`^@${config.botName}.*`);
 
       if (regex.test(event.message.text)) {
         try {
