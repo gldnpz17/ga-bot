@@ -1,6 +1,8 @@
 # bacod-bot
 A simple LINE bot server application that replies to a message that matches a given regex.
 
+Official Account ID : @450ykrnr
+
 # How to use
 ## Adding a configuration
 This command makes the bot reply with 'Pong' everytime you type 'Ping'(case-insensitive).
