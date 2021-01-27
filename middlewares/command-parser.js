@@ -11,7 +11,13 @@ module.exports.commandParser = async (req, res, next) => {
   
         if (regex.test(event.message.text)) {
           try {
-            let args = event.message.text.match(/(.*?)\n/)[1].split(' ');
+            let argsLine = "";
+            if (event.message.text.indexOf('\n') === -1){
+              argsLine = event.message.text;
+            } else {
+              argsLine = event.message.text.match(/(.*?)\n/)[1];
+            }
+            let args = argsLine.split(' ');
             args.splice(0, 1);
       
             if(args.length > 0) {
@@ -32,8 +38,6 @@ module.exports.commandParser = async (req, res, next) => {
             });
           } 
         }
-      } else {
-        event.command = null;
       }
   
       next()
