@@ -77,6 +77,7 @@ router.post('/', async (req, res) => {
         reply = await processMessageUseCase.replyToMessage(groupId, event.message.text);
 
         if (reply !== null) {
+          console.log(`Replying to message. replyToken: ${event.replyToken}. reply: ${reply}`);
           lineClient.replyMessage(event.replyToken, {
             type: 'text',
             text: reply
