@@ -2,7 +2,8 @@ const Models = require('../models/models');
 
 module.exports.initializeConversation = async (groupChatId) => {
   let newChatConfig = new Models.GroupChatConfig({
-    groupChatId: groupChatId
+    groupChatId: groupChatId,
+    configs: []
   });
 
   newChatConfig.save((err, doc) => {

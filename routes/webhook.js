@@ -29,10 +29,6 @@ router.post('/', async (req, res) => {
     }
     try {
       if (event.type === 'join') {
-        lineClient.pushMessage(groupId, {
-          type: 'text',
-          text: '[Initializing Bot]'
-        });
         await configureBotUseCase.initializeConversation(groupId);
 
         lineClient.pushMessage(groupId, {
