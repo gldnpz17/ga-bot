@@ -31,9 +31,9 @@ module.exports.addConfiguration = async (groupChatId, configItem) => {
   let chatConfig = await Models.GroupChatConfig.findOne({ groupChatId: groupChatId }).exec();
 
   // If there's already a config with the same name, remove the old one.
-  let index = chatConfig.configs.findIndex(config => config.name === configItem.name);
+  let index = chatConfig.configs.findIndex(config => config.configName === configItem.configName);
   if (index !== -1) {
-    console.log(`Removed config. config name: ${configItem.name}`);
+    console.log(`Removed config. config name: ${configItem.configName}`);
     chatConfig.configs.splice(index, 1);
   }
 
@@ -47,7 +47,7 @@ module.exports.addConfiguration = async (groupChatId, configItem) => {
 module.exports.removeConfiguration = async (groupChatId, configItemName) => {
   let chatConfig = await Models.GroupChatConfig.findOne({ groupChatId: groupChatId }).exec();
 
-  let index = chatConfig.configs.findIndex(config => config.name === configItemName);
+  let index = chatConfig.configs.findIndex(config => config.configName === configItemName);
   if (index !== -1) {
     chatConfig.configs.splice(index, 1);
 
