@@ -9,7 +9,7 @@ This command makes the bot reply with 'Pong' everytime you type 'Ping'(case-inse
 ```
 @BacodBot add-configuration
 {
-  "configName":"hello-world",
+  "configName":"ping-pong",
   "regex":"/^Ping$/i",
   "reply":"Pong"
 }
