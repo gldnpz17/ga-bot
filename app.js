@@ -30,7 +30,7 @@ var app = express();
 app.use(logger('dev'));
 app.use(line.middleware(lineConfig));
 app.use(requestLogger);
-app.use(rawBodyMiddleware);
+//app.use(rawBodyMiddleware);
 //app.use(signatureValidator);
 app.use(commandParser);
 app.use('/webhook', webhookRouter);
