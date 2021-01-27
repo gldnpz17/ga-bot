@@ -8,22 +8,34 @@ mongoose.connect(config.mongoDbUri, {
   useUnifiedTopology: true
 });
 
+const line = require('@line/bot-sdk');
+const lineConfig = {
+  channelAccessToken: config.channelAccessToken,
+  channelSecret: config.channelSecret
+}
+
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 let webhookRouter = require('./routes/webhook');
+const { rawBodyMiddleware } = require('./middlewares/raw-body');
+const { requestLogger } = require('./middlewares/request-logger');
+const { signatureValidator } = require('./middlewares/signature-validator');
+const { commandParser } = require('./middlewares/command-parser');
 
 var app = express();
 
 app.use(logger('dev'));
+app.use(line.middleware(lineConfig));
+app.use(rawBodyMiddleware);
+app.use(requestLogger);
+app.use(signatureValidator);
+app.use(commandParser);
 app.use('/webhook', webhookRouter);
 app.use(function(err, req, res, next) {
   console.log(err.stack);
 });
-//app.use(express.json());
-//app.use(express.urlencoded({ extended: false }));
-//app.use(cookieParser());
 
 module.exports = app;
