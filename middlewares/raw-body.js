@@ -3,8 +3,9 @@ module.exports.rawBodyMiddleware = async (req, res, next) => {
     let data = "";
     req.on('data', function(chunk){ data += chunk})
     req.on('end', function(){
-        req.rawBody = data;
-        next();
+      console.log(`Raw body: ${data}`);
+      req.rawBody = data;
+      next();
     });
   } catch (err) {
     next(err);

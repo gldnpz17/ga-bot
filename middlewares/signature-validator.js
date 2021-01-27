@@ -4,6 +4,7 @@ const line = require('@line/bot-sdk');
 
 module.exports.signatureValidator = async (req, res, next) => {
   try {
+    console.log('Validating signature...');
     if (line.validateSignature(req.rawBody, config.channelSecret, req.header('x-line-signature')) === true) {
       console.log('Signature is valid.');
       next();
