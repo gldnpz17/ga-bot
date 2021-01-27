@@ -29,11 +29,15 @@ router.post('/', async (req, res) => {
     }
     try {
       if (event.type === 'join') {
-        configureBotUseCase.initializeConversation(groupId);
+        lineClient.pushMessage(groupId, {
+          type: 'text',
+          text: '[Initializing Bot]'
+        });
+        await configureBotUseCase.initializeConversation(groupId);
 
         lineClient.pushMessage(groupId, {
           type: 'text',
-          text: 'Hello there! o/\n\n The guide on how to use this bot is in the github repo: https://github.com/gldnpz17/bacod-bot'
+          text: '[Bot initialization complete]\nHello there! o/\n\nThe guide on how to use this bot is in the github repo: https://github.com/gldnpz17/bacod-bot'
         });
       } else if (event.type === 'leave') {
         configureBotUseCase.removeConversation(groupId);
