@@ -96,7 +96,7 @@ router.post('/', async (req, res) => {
       if (err instanceof ApplicationError) {
         lineClient.replyMessage(event.replyToken, {
           type: 'text',
-          text: reply
+          text: err.message
         });
       }
 

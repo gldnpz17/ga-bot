@@ -30,17 +30,10 @@ var app = express();
 app.use(logger('dev'));
 app.use(line.middleware(lineConfig));
 app.use(requestLogger);
-//app.use(rawBodyMiddleware);
-//app.use(signatureValidator);
 app.use(commandParser);
 app.use('/webhook', webhookRouter);
 app.use(function(err, req, res, next) {
   console.log(err.stack);
 });
-
-/*app.listen(config.port, () => {
-  console.log(`App started. Listening to port ${config.port}`);
-  console.log(`Configs: ${JSON.stringify(config)}`);
-});*/
 
 module.exports = app;
