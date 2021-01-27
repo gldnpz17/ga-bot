@@ -55,6 +55,6 @@ module.exports.removeConfiguration = async (groupChatId, configItemName) => {
 
     console.log(`Removed config. config: ${configItemName}`);
   } else {
-    throw new Error('Configuration not found.');
+    throw new Error(`Configuration \'${configItemName}\'not found.`);
   }
 }
