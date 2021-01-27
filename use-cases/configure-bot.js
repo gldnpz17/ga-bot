@@ -36,13 +36,13 @@ module.exports.addConfiguration = async (groupChatId, configItem) => {
 
   //check for null/undefined fields
   if (configItem.configName === null || configItem.configName === undefined) {
-    throw new ApplicationError('Invalid configuration. configName ca\'nt be empty.');
+    throw new ApplicationError('Invalid configuration. configName can\'t be empty.');
   };
   if (configItem.regex === null || configItem.regex === undefined) {
-    throw new ApplicationError('Invalid configuration. regex ca\'nt be empty.');
+    throw new ApplicationError('Invalid configuration. regex can\'t be empty.');
   };
   if (configItem.reply === null || configItem.reply === undefined) {
-    throw new ApplicationError('Invalid configuration. \'reply\' ca\'nt be empty.');
+    throw new ApplicationError('Invalid configuration. \'reply\' can\'t be empty.');
   };
 
   let chatConfig = await Models.GroupChatConfig.findOne({ groupChatId: groupChatId }).exec();
