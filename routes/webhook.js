@@ -74,7 +74,7 @@ router.post('/', async (req, res) => {
             break;
         }
       } else if (event.type === 'message' && event.message.type === 'text') {
-        reply = await processMessageUseCase.replyToMessage(event.message.text);
+        reply = await processMessageUseCase.replyToMessage(groupId, event.message.text);
 
         if (reply !== null) {
           lineClient.replyMessage(event.replyToken, {
