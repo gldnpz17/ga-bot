@@ -32,7 +32,7 @@ router.post('/', async (req, res) => {
       if (event.type === 'join') {
         await configureBotUseCase.initializeConversation(groupId);
 
-        lineClient.pushMessage(groupId, {
+        lineClient.replyMessage(event.replyToken, {
           type: 'text',
           text: '[Bot initialization complete]\nHello there! o/\n\nType `@BacodBot help` if you need help.'
         });
