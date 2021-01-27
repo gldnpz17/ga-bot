@@ -1,4 +1,4 @@
-import Models from '../models/models';
+const Models = require('../models/models');
 
 module.exports.replyToMessage = async (groupChatId, message) => {
   let chatConfig = await Models.GroupChatConfig.findOne({ groupChatId: groupChatId }).exec();

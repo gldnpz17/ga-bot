@@ -1,4 +1,4 @@
-import Models from '../models/models';
+const Models = require('../models/models');
 
 module.exports.initializeConversation = async (groupChatId) => {
   let newChatConfig = new Models.GroupChatConfig({
