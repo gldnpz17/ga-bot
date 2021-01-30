@@ -12,6 +12,7 @@ const lineClient = new line.Client(lineConfig);
 
 const configureBotUseCase = require('../use-cases/configure-bot');
 const processMessageUseCase = require('../use-cases/process-message');
+const configureCustomTagUseCase = require('../use-cases/configure-tag');
 const { commandParser } = require('../middlewares/command-parser');
 const { signatureValidator } = require('../middlewares/signature-validator');
 const { requestLogger } = require('../middlewares/request-logger');

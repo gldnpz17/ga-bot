@@ -31,7 +31,7 @@ module.exports.listConfigurations = async (groupChatId) => {
 module.exports.addConfiguration = async (groupChatId, configItem) => {
   //check for whitespace
   if (/\s/.test(configItem.configName)) {
-    throw new ApplicationError('configName may not contain any whitespace characters.');
+    throw new ApplicationError('\'configName\' may not contain any whitespace characters.');
   }
 
   //check for null/undefined fields

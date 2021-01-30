@@ -6,6 +6,12 @@ const groupChatConfigSchema = new mongoose.Schema({
     configName: String,
     regex: String,
     reply: String
+  }],
+  customTags: [{
+    tagName: String,
+    userIds: [{
+      userId: String
+    }]
   }]
 });
 

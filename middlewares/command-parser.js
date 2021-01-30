@@ -30,12 +30,7 @@ module.exports.commandParser = async (req, res, next) => {
               throw new Error(`Error parsing command. message: ${event.message.text}`);
             }
           } catch(err) {
-            console.log(err);
-  
-            await lineClient.replyMessage(event.replyToken, {
-              type: 'text',
-              text: 'Error parsing command.'
-            });
+            next(err);
           } 
         }
       }
