@@ -1,8 +1,8 @@
 const ApplicationError = require('../common/application-error');
 const config = require('../config');
 const Models = require('../models/models');
-const cronValidator = require('cron-expression-validator');
 const configureScheduledTaskUseCase = require('./configure-scheduled-tasks');
+const { default: cron } = require('cron-validate');
 
 module.exports.initializeConversation = async (groupChatId) => {
   let newChatConfig = new Models.GroupChatConfig({
@@ -50,7 +50,9 @@ module.exports.addConfiguration = async (groupChatId, configItem) => {
 
   // Validate cron expression
   if (configItem.cronExpression !== null && configItem.cronExpression !== undefined) {
-    if (!cronValidator.isValidCronExpression(configItem.cronExpression)) {
+    let cronValidationResult = cron(configItem.cronExpression);
+
+    if (!cronValidationResult.isValid()) {
       throw new ApplicationError('Invalid cron expression.');
     }
   }
