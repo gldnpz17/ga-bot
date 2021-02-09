@@ -41,8 +41,8 @@ module.exports.addConfiguration = async (groupChatId, configItem) => {
   if (configItem.configName === null || configItem.configName === undefined) {
     throw new ApplicationError('Invalid configuration. \'configName\' can\'t be empty.');
   };
-  if ((configItem.regex === null || configItem.regex === undefined) || (configItem.cronExpression === null || configItem.cronExpression === undefined)) {
-    throw new ApplicationError('Invalid configuration. \'regex\' or \'cronExpression\' can\'t be empty.');
+  if ((configItem.regex === null || configItem.regex === undefined) && (configItem.cronExpression === null || configItem.cronExpression === undefined)) {
+    throw new ApplicationError('Invalid configuration. both \'regex\' and \'cronExpression\' can\'t be empty.');
   };
   if (configItem.reply === null || configItem.reply === undefined) {
     throw new ApplicationError('Invalid configuration. \'reply\' can\'t be empty.');
