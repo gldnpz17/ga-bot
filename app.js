@@ -8,6 +8,8 @@ mongoose.connect(config.mongoDbUri, {
   useUnifiedTopology: true
 });
 
+const Models = require('./models/models');
+
 const line = require('@line/bot-sdk');
 const lineConfig = {
   channelAccessToken: config.channelAccessToken,
@@ -24,6 +26,18 @@ const { rawBodyMiddleware } = require('./middlewares/raw-body');
 const { requestLogger } = require('./middlewares/request-logger');
 const { signatureValidator } = require('./middlewares/signature-validator');
 const { commandParser } = require('./middlewares/command-parser');
+
+const configureScheduledTasksUseCase = require('./use-cases/configure-scheduled-tasks');
+
+// Initialize scheduled tasks
+let groupChatConfigs = Models.GroupChatConfig.find({}).exec();
+groupChatConfigs.map(groupChatConfig => {
+  let groupChatId = groupChatConfig.groupChatId;
+
+  groupChatConfig.map(configItem => {
+    configureScheduledTasksUseCase.scheduleMessage(groupChatId, configItem);
+  });
+});
 
 var app = express();
 

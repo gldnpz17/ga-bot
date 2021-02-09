@@ -5,6 +5,7 @@ const groupChatConfigSchema = new mongoose.Schema({
   configs: [{
     configName: String,
     regex: String,
+    cronExpression: String,
     reply: String
   }],
   customTags: [{
@@ -12,7 +13,8 @@ const groupChatConfigSchema = new mongoose.Schema({
     userIds: [{
       userId: String
     }]
-  }]
+  }],
+  
 });
 
 module.exports.GroupChatConfig = mongoose.model('GroupChatConfig', groupChatConfigSchema);

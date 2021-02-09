@@ -1,5 +1,8 @@
 const ApplicationError = require('../common/application-error');
+const config = require('../config');
 const Models = require('../models/models');
+const cronValidator = require('cron-expression-validator');
+const configureScheduledTaskUseCase = require('./configure-scheduled-tasks');
 
 module.exports.initializeConversation = async (groupChatId) => {
   let newChatConfig = new Models.GroupChatConfig({
@@ -29,21 +32,28 @@ module.exports.listConfigurations = async (groupChatId) => {
 };
 
 module.exports.addConfiguration = async (groupChatId, configItem) => {
-  //check for whitespace
+  // Check for whitespace
   if (/\s/.test(configItem.configName)) {
     throw new ApplicationError('\'configName\' may not contain any whitespace characters.');
   }
 
-  //check for null/undefined fields
+  // Check for null/undefined fields
   if (configItem.configName === null || configItem.configName === undefined) {
     throw new ApplicationError('Invalid configuration. \'configName\' can\'t be empty.');
   };
-  if (configItem.regex === null || configItem.regex === undefined) {
-    throw new ApplicationError('Invalid configuration. \'regex\' can\'t be empty.');
+  if ((configItem.regex === null || configItem.regex === undefined) || (configItem.cronExpression === null || configItem.cronExpression === undefined)) {
+    throw new ApplicationError('Invalid configuration. \'regex\' or \'cronExpression\' can\'t be empty.');
   };
   if (configItem.reply === null || configItem.reply === undefined) {
     throw new ApplicationError('Invalid configuration. \'reply\' can\'t be empty.');
   };
+
+  // Validate cron expression
+  if (configItem.cronExpression !== null && configItem.cronExpression !== undefined) {
+    if (!cronValidator.isValidCronExpression(configItem.cronExpression)) {
+      throw new ApplicationError('Invalid cron expression.');
+    }
+  }
 
   let chatConfig = await Models.GroupChatConfig.findOne({ groupChatId: groupChatId }).exec();
 
@@ -56,6 +66,9 @@ module.exports.addConfiguration = async (groupChatId, configItem) => {
 
   chatConfig.configs.push(configItem);
 
+  // Setup task schedule
+  await configureScheduledTaskUseCase.scheduleMessage(groupChatId, configItem);
+
   await chatConfig.save();
 
   console.log(`Added config. config: ${configItem}`);
@@ -66,8 +79,10 @@ module.exports.removeConfiguration = async (groupChatId, configItemName) => {
 
   let index = chatConfig.configs.findIndex(config => config.configName === configItemName);
   if (index !== -1) {
-    chatConfig.configs.splice(index, 1);
+    await configureScheduledTaskUseCase.unscheduleMessage(chatConfig.configs[index]);
 
+    chatConfig.configs.splice(index, 1);
+  
     await chatConfig.save();
 
     console.log(`Removed config. config: ${configItemName}`);
