@@ -30,12 +30,13 @@ const { commandParser } = require('./middlewares/command-parser');
 const configureScheduledTasksUseCase = require('./use-cases/configure-scheduled-tasks');
 
 // Initialize scheduled tasks
-let groupChatConfigs = Models.GroupChatConfig.find({}).exec();
-groupChatConfigs.map(groupChatConfig => {
-  let groupChatId = groupChatConfig.groupChatId;
-
-  groupChatConfig.map(configItem => {
-    configureScheduledTasksUseCase.scheduleMessage(groupChatId, configItem);
+Models.GroupChatConfig.find({}).exec().then(groupChatConfigs => {
+  groupChatConfigs.map(groupChatConfig => {
+    let groupChatId = groupChatConfig.groupChatId;
+  
+    groupChatConfig.configs.map(configItem => {
+      configureScheduledTasksUseCase.scheduleMessage(groupChatId, configItem);
+    });
   });
 });
 
