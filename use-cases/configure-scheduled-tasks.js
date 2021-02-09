@@ -15,6 +15,8 @@ module.exports.scheduleMessage = async (groupChatId, configItem) => {
   if (configItem.cronExpression !== null && configItem.cronExpression !== undefined) {
     try {
       let task = cron.schedule(configItem.cronExpression, async () => {
+        console.log(`Sending scheduled message. message: ${configItem.reply}. recipient groupChat: ${groupChatId}`);
+
         lineClient.pushMessage(groupChatId, {
           type: 'text',
           text: configItem.reply
