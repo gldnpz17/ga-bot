@@ -1,10 +1,11 @@
 # bacod-bot
-A simple LINE bot server application that replies to a message that matches a given regex.
+A simple LINE bot server application.
 
 Official Account ID : @450ykrnr
 
 # How to use
 ## Adding a configuration
+### Regex-based message replies
 This command makes the bot reply with 'Pong' everytime you type 'Ping'(case-insensitive).
 ```
 @BacodBot add-configuration
@@ -12,6 +13,17 @@ This command makes the bot reply with 'Pong' everytime you type 'Ping'(case-inse
   "configName":"ping-pong",
   "regex":"/^Ping$/i",
   "reply":"Pong"
+}
+```
+
+### Scheduled messages
+This command makes the bot send 'Beep' every minute.
+```
+@BacodBot add-configuration
+{
+  "configName":"beep-config",
+  "cronExpression":"* * * * *",
+  "reply":"beep"
 }
 ```
 
@@ -28,3 +40,4 @@ Removes a configuration.
 ```
 @BacodBot remove-configuration my_configuration_name
 ```
+
