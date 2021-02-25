@@ -47,7 +47,7 @@ app.use(line.middleware(lineConfig));
 app.use(requestLogger);
 app.use(commandParser);
 app.use('/webhook', webhookRouter);
-app.use(function(err, req, res, next) {
+app.use((err, req, res, next) => {
   console.log(err.stack);
 });
 
