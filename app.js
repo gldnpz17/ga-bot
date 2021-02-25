@@ -48,7 +48,8 @@ app.use(requestLogger);
 app.use(commandParser);
 app.use('/webhook', webhookRouter);
 app.use((err, req, res, next) => {
-  console.log(err.stack);
+  console.log(err.message);
+  console.log(JSON.stringify(err.stack));
 });
 
 module.exports = app;

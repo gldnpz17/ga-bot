@@ -99,9 +99,6 @@ router.post('/', async (req, res, next) => {
 
       return;
     } catch(err) {
-      console.log(err.message);
-      console.log(JSON.stringify(err.stack));
-
       if (err instanceof ApplicationError) {
         await lineClient.replyMessage(event.replyToken, {
           type: 'text',

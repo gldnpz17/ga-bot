@@ -48,6 +48,15 @@ module.exports.addConfiguration = async (groupChatId, configItem) => {
     throw new ApplicationError('Invalid configuration. \'reply\' can\'t be empty.');
   };
 
+  //Validate regex
+  if (configItem.regex !== null && configItem.regex !== undefined) {
+    try {
+      new RegExp(configItem.regex);
+    } catch(err) {
+      throw new ApplicationError('Invalid regex.');
+    }
+  }
+
   // Validate cron expression
   if (configItem.cronExpression !== null && configItem.cronExpression !== undefined) {
     let cronValidationResult = cron(configItem.cronExpression);
