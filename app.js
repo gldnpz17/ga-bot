@@ -10,12 +10,6 @@ mongoose.connect(config.mongoDbUri, {
 
 const Models = require('./models/models');
 
-const line = require('@line/bot-sdk');
-const lineConfig = {
-  channelAccessToken: config.channelAccessToken,
-  channelSecret: config.channelSecret
-}
-
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
@@ -44,7 +38,6 @@ Models.GroupChatConfig.find({}).exec().then(groupChatConfigs => {
 var app = express();
 
 app.use(logger('dev'));
-app.use(line.middleware(lineConfig));
 app.use(requestLogger);
 app.use(commandParser);
 app.use('/webhook', webhookRouter);
