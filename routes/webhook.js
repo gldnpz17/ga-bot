@@ -18,7 +18,7 @@ const { signatureValidator } = require('../middlewares/signature-validator');
 const { requestLogger } = require('../middlewares/request-logger');
 const ApplicationError = require('../common/application-error');
 
-router.post('/', line.middleware(lineConfig), async (req, res, next) => {
+router.post('/', line.middleware(lineConfig), commandParser, async (req, res, next) => {
   req.body.events.map(async (event) => {
     let groupId = event.source.groupId;
     if (groupId === null) {

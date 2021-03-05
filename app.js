@@ -17,10 +17,7 @@ var logger = require('morgan');
 
 let webhookRouter = require('./routes/webhook');
 let statusRouter = require('./routes/status');
-const { rawBodyMiddleware } = require('./middlewares/raw-body');
 const { requestLogger } = require('./middlewares/request-logger');
-const { signatureValidator } = require('./middlewares/signature-validator');
-const { commandParser } = require('./middlewares/command-parser');
 
 const configureScheduledTasksUseCase = require('./use-cases/configure-scheduled-tasks');
 
@@ -39,7 +36,6 @@ var app = express();
 
 app.use(logger('dev'));
 app.use(requestLogger);
-app.use(commandParser);
 app.use('/webhook', webhookRouter);
 app.use('/status', statusRouter);
 app.use((err, req, res, next) => {
