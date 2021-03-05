@@ -22,6 +22,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 let webhookRouter = require('./routes/webhook');
+let statusRouter = require('./routes/status');
 const { rawBodyMiddleware } = require('./middlewares/raw-body');
 const { requestLogger } = require('./middlewares/request-logger');
 const { signatureValidator } = require('./middlewares/signature-validator');
@@ -47,6 +48,7 @@ app.use(line.middleware(lineConfig));
 app.use(requestLogger);
 app.use(commandParser);
 app.use('/webhook', webhookRouter);
+app.use('/status', statusRouter);
 app.use((err, req, res, next) => {
   console.log(err.message);
   console.log(JSON.stringify(err.stack));
