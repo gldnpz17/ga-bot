@@ -216,5 +216,10 @@ module.exports.convertCoordinates = function konversi(str){
 	}
 	
 	result += "\nDONE\n";
+
+	//Use markdown
+	result = "```\n" + result;
+	result += "```\n"
+	
 	return result;
 }

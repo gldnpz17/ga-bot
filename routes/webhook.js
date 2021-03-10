@@ -78,7 +78,7 @@ router.post('/', line.middleware(lineConfig), requestLogger, commandParser, asyn
             break;
 
           case 'convert-coordinates':
-            console.log(`converting coordinates. argument: ${event.command.body}`)
+            console.log(`converting coordinates. argument: ${event.command.body}`);
 
             await lineClient.replyMessage(event.replyToken, {
               type: 'text',
