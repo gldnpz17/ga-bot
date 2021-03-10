@@ -80,7 +80,7 @@ router.post('/', line.middleware(lineConfig), requestLogger, commandParser, asyn
           case 'convert-coordinates':
             await lineClient.replyMessage(event.replyToken, {
               type: 'text',
-              text: convertCoordinates(event.command.value)
+              text: convertCoordinates(event.command.body)
             });
             break;
 
