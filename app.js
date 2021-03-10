@@ -35,7 +35,6 @@ Models.GroupChatConfig.find({}).exec().then(groupChatConfigs => {
 var app = express();
 
 app.use(logger('dev'));
-app.use(requestLogger);
 app.use('/webhook', webhookRouter);
 app.use('/status', statusRouter);
 app.use((err, req, res, next) => {

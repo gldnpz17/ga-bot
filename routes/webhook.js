@@ -19,7 +19,7 @@ const { requestLogger } = require('../middlewares/request-logger');
 const ApplicationError = require('../common/application-error');
 const { convertCoordinates } = require('../use-cases/coordinate-conversion');
 
-router.post('/', line.middleware(lineConfig), commandParser, async (req, res, next) => {
+router.post('/', line.middleware(lineConfig), requestLogger, commandParser, async (req, res, next) => {
   req.body.events.map(async (event) => {
     let groupId = event.source.groupId;
     if (groupId === null) {
