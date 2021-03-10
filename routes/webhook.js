@@ -17,6 +17,7 @@ const { commandParser } = require('../middlewares/command-parser');
 const { signatureValidator } = require('../middlewares/signature-validator');
 const { requestLogger } = require('../middlewares/request-logger');
 const ApplicationError = require('../common/application-error');
+const { convertCoordinates } = require('../use-cases/coordinate-conversion');
 
 router.post('/', line.middleware(lineConfig), commandParser, async (req, res, next) => {
   req.body.events.map(async (event) => {
@@ -73,6 +74,13 @@ router.post('/', line.middleware(lineConfig), commandParser, async (req, res, ne
             await lineClient.replyMessage(event.replyToken, {
               type: 'text',
               text: 'How to use:\nhttps://github.com/gldnpz17/bacod-bot\n\nRegex article:\nhttps://en.wikipedia.org/wiki/Regular_expression'
+            });
+            break;
+
+          case 'convert-coordinates':
+            await lineClient.replyMessage(event.replyToken, {
+              type: 'text',
+              text: convertCoordinates(event.command.value)
             });
             break;
 
