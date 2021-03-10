@@ -24,7 +24,7 @@ module.exports.commandParser = async (req, res, next) => {
               event.command = {
                 name: args[0],
                 value: args[args.length - 1],
-                body: event.message.text.substr(event.message.text.indexOf('\n'))
+                body: event.message.text.substr(++event.message.text.indexOf('\n'))
               }
             } else {
               throw new Error(`Error parsing command. message: ${event.message.text}`);
