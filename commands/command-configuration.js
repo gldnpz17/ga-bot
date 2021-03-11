@@ -39,6 +39,15 @@ bot.addFunctionality((event) => event.type === 'leave', async (event) => {
   configureBotUseCase.removeConversation(event.source.groupId);
 });
 
+bot.addFunctionality((event) => /^konversi .*/.test(event.command.raw), async (event) => {
+  console.log(`converting coordinates. argument: ${event.command.body}`);
+
+  await lineClient.replyMessage(event.replyToken, {
+    type: 'text',
+    text: convertCoordinates(event.command.body)
+  });
+});
+
 bot.addFunctionality((event) => event.command.name === 'add-configuration', async (event) => {
   await configureBotUseCase.addConfiguration(groupId, JSON.parse(event.command.body));
 
@@ -71,15 +80,6 @@ bot.addFunctionality((event) => event.command.name === 'help', async (event) => 
   await lineClient.replyMessage(event.replyToken, {
     type: 'text',
     text: 'How to use:\nhttps://github.com/gldnpz17/bacod-bot\n\nRegex article:\nhttps://en.wikipedia.org/wiki/Regular_expression'
-  });
-});
-
-bot.addFunctionality((event) => event.command.name === 'convert-coordinates', async (event) => {
-  console.log(`converting coordinates. argument: ${event.command.body}`);
-
-  await lineClient.replyMessage(event.replyToken, {
-    type: 'text',
-    text: convertCoordinates(event.command.body)
   });
 });
 
