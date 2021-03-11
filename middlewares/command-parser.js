@@ -11,20 +11,21 @@ module.exports.commandParser = async (req, res, next) => {
   
         if (regex.test(event.message.text)) {
           try {
-            let argsLine = "";
+            let commandLine = '';
             if (event.message.text.indexOf('\n') === -1){
-              argsLine = event.message.text;
+              commandLine += '\n';
             } else {
-              argsLine = event.message.text.match(/(.*?)\n/)[1];
+              commandLine = event.message.text.match(new RegExp(`^@${config.botName}(.*?)\n`))[1];
             }
-            let args = argsLine.split(' ');
-            args.splice(0, 1);
+            let commandLineComponents = commandLine.split(' ');
+            commandLineComponents.splice(0, 1);
       
-            if(args.length > 0) {
+            if(commandLineComponents.length > 0) {
               event.command = {
-                name: args[0],
-                value: args[args.length - 1],
-                body: event.message.text.substr(event.message.text.indexOf('\n') + 1)
+                name: commandLineComponents.splice(0, 1),
+                args: commandLineComponents,
+                body: event.message.text.substr(event.message.text.indexOf('\n') + 1),
+                raw: commandLine
               }
             } else {
               throw new Error(`Error parsing command. message: ${event.message.text}`);
