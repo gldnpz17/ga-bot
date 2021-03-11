@@ -49,7 +49,7 @@ bot.addFunctionality((event) => /^konversi .*/.test(event.command.raw), async (e
 });
 
 bot.addFunctionality((event) => event.command.name === 'add-configuration', async (event) => {
-  await configureBotUseCase.addConfiguration(groupId, JSON.parse(event.command.body));
+  await configureBotUseCase.addConfiguration(event.source.groupId, JSON.parse(event.command.body));
 
   await lineClient.replyMessage(event.replyToken, {
     type: 'text',

@@ -25,7 +25,7 @@ module.exports.BotCommand = class CommandPipeline {
     }
   }
 
-  async err(errorHandler) {
+  err(errorHandler) {
     this.errorHandler = errorHandler;
   }
 }
