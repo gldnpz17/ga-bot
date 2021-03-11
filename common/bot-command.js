@@ -12,7 +12,7 @@ module.exports.BotCommand = class CommandPipeline {
   }
 
   async execute(event) {
-    for(x = 0; x < this.pipelineItems.length; x++) {
+    for(let x = 0; x < this.pipelineItems.length; x++) {
       try {
         if(this.pipelineItems[x].condition(event)) {
           await this.pipelineItems[x].action(event);
