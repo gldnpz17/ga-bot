@@ -40,11 +40,11 @@ bot.addFunctionality((event) => event.type === 'leave', async (event) => {
 });
 
 bot.addFunctionality((event) => event.command.name === 'add-configuration', async (event) => {
-  await configureBotUseCase.initializeConversation(event.source.groupId);
+  await configureBotUseCase.addConfiguration(groupId, JSON.parse(event.command.body));
 
   await lineClient.replyMessage(event.replyToken, {
     type: 'text',
-    text: '[Bot initialization complete]\nHello there! o/\n\nType `@BacodBot help` if you need help.'
+    text: 'Configuration saved.'
   });
 });
 
