@@ -40,7 +40,7 @@ bot.addFunctionality((event) => event.type === 'leave', async (event) => {
 });
 
 bot.addFunctionality((event) => /^konversi .*/.test(event.command.raw), async (event) => {
-  console.log(`converting coordinates. argument: ${event.command.body}`);
+  console.log(`converting coordinates. argument: ${event.command.raw}`);
 
   await lineClient.replyMessage(event.replyToken, {
     type: 'text',
