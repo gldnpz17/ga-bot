@@ -27,8 +27,6 @@ module.exports.commandParser = async (req, res, next) => {
                 body: event.message.text.substr(event.message.text.indexOf('\n') + 1),
                 raw: commandLine
               }
-            } else {
-              throw new Error(`Error parsing command. message: ${event.message.text}`);
             }
           } catch(err) {
             next(err);
