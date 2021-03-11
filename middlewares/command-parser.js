@@ -23,7 +23,7 @@ module.exports.commandParser = async (req, res, next) => {
     
           if(commandLineComponents.length > 0) {
             event.command = {
-              name: commandLineComponents.splice(0, 1),
+              name: commandLineComponents.splice(0, 1)[0],
               args: commandLineComponents,
               body: (event.message.text.indexOf('\n') === -1) ? '' : event.message.text.substr(event.message.text.indexOf('\n')),
               raw: commandLine
