@@ -11,12 +11,12 @@ module.exports.commandParser = async (req, res, next) => {
   
         if (regex.test(event.message.text)) {
           try {
-            let commandLine = '';
-            if (event.message.text.indexOf('\n') === -1){
+            let commandLine = event.message.text;
+            if (commandLine.indexOf('\n') === -1){
               commandLine += '\n';
             } 
             
-            commandLine = event.message.text.match(new RegExp(`^@${config.botName} (.*?)\n`))[1];
+            commandLine = commandLine.match(new RegExp(`^@${config.botName} (.*?)\n`))[1];
             
             let commandLineComponents = commandLine.split(' ');
             commandLineComponents.splice(0, 1);
