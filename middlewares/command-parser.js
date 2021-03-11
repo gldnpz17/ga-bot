@@ -14,9 +14,10 @@ module.exports.commandParser = async (req, res, next) => {
             let commandLine = '';
             if (event.message.text.indexOf('\n') === -1){
               commandLine += '\n';
-            } else {
-              commandLine = event.message.text.match(new RegExp(`^@${config.botName} (.*?)\n`))[1];
-            }
+            } 
+            
+            commandLine = event.message.text.match(new RegExp(`^@${config.botName} (.*?)\n`))[1];
+            
             let commandLineComponents = commandLine.split(' ');
             commandLineComponents.splice(0, 1);
       
