@@ -44,7 +44,7 @@ bot.addFunctionality((event) => /^konversi .*/.test(event.command.raw), async (e
 
   await lineClient.replyMessage(event.replyToken, {
     type: 'text',
-    text: convertCoordinates(event.command.body)
+    text: convertCoordinates(event.command.raw)
   });
 });
 
