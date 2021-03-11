@@ -26,6 +26,19 @@ bot.err(async (event, err) => {
   }
 });
 
+bot.addFunctionality((event) => event.type === 'join', async (event) => {
+  await configureBotUseCase.initializeConversation(event.source.groupId);
+    
+  await lineClient.replyMessage(event.replyToken, {
+    type: 'text',
+    text: '[Bot initialization complete]\nHello there! o/\n\nType `@BacodBot help` if you need help.'
+  });
+});
+
+bot.addFunctionality((event) => event.type === 'leave', async (event) => {
+  configureBotUseCase.removeConversation(event.source.groupId);
+});
+
 bot.addFunctionality((event) => event.command.name === 'add-configuration', async (event) => {
   await configureBotUseCase.initializeConversation(event.source.groupId);
 
