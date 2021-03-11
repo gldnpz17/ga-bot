@@ -7,26 +7,19 @@ module.exports.commandParser = async (req, res, next) => {
         return;
       }
       if (event.type === 'message' && event.message.type === 'text') {
-        let regex = new RegExp(`^@${config.botName}.*`);
-  
-        if (regex.test(event.message.text)) {
-          let commandLine = event.message.text;
+        let text = event.message.text;
           
-          if (commandLine.indexOf('\n') === -1){
-            commandLine += '\n';
-          } 
-          
-          commandLine = commandLine.match(new RegExp(`^@${config.botName} (.*?)\n`))[1];
-          
-          let commandLineComponents = commandLine.split(' ');
-          commandLineComponents.splice(0, 1);
-    
-          if(commandLineComponents.length > 0) {
+        if (new RegExp(`^@${config.botName}.*`).test(event.message.text)) {
+          let command = text.match(new RegExp(`^@${config.botName} (.*?)(\n|$)`))[1];
+
+          let commandComponents = command.split(' ');
+
+          if(commandComponents.length > 0) {
             event.command = {
-              name: commandLineComponents.splice(0, 1)[0],
-              args: commandLineComponents,
-              body: (event.message.text.indexOf('\n') === -1) ? '' : event.message.text.substr(event.message.text.indexOf('\n')),
-              raw: commandLine
+              name: commandComponents.splice(0, 1)[0],
+              args: commandComponents,
+              body: (text.indexOf('\n') === -1) ? '' : text.substr(text.indexOf('\n') + 1),
+              raw: command
             }
           } 
         }
