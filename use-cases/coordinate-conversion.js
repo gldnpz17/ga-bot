@@ -1,56 +1,70 @@
 module.exports.convertCoordinates = function konversi(str){
-	var error = "Bad argument\n";
-	var result = str + ":\n";
-	var check = str.split(" ");
+	const error = "Error:";
+	var result;
+	var check;
+	var mode, from = 0, into = 0;
+	var pos = [0,0,0];
+	var vect = [0,0,0];
 	
-	if(check[0] !== "konversi") return error;
+	str = str.toLowerCase();
+	result = str + ":\n";
 	
-	var mode, from, into;
-	if(check[1] === "vektor") mode = 1;
-	else if(check[1] === "titik") mode = 2;
-	else mode = 0;
-	
-	for(var i = 0;i<check.length;i++){
-		if(check[i] === "dari"){
-			if(check[i+1] === "kartesian") from = 1;
-			else if(check[i+1] === "silinder") from = 2;
-			else if(check[i+1] === "bola") from = 3;
-			else from = 0;
+	try{
+		check = str.split(" ");
+
+		if(check[0] !== "konversi") throw " not a conversion command\n";
+
+		for(let i = 0;i<check.length;i++){
+			if(from == 0 && check[i] === "dari"){
+				if(check[i+1] === "kartesian") from = 1;
+				else if(check[i+1] === "silinder") from = 2;
+				else if(check[i+1] === "bola") from = 3;
+			}
+			else if(into == 0 && check[i] === "ke"){
+				if(check[i+1] === "kartesian") into = 1;
+				else if(check[i+1] === "silinder") into = 2;
+				else if(check[i+1] === "bola") into = 3;
+			}
 		}
-		else if(check[i] === "ke"){
-			if(check[i+1] === "kartesian") into = 1;
-			else if(check[i+1] === "silinder") into = 2;
-			else if(check[i+1] === "bola") into = 3;
-			else into = 0;
+		if(from*into == 0) throw " bad argument\n";
+		if(from == into) return "sama";
+		
+		let start = str.indexOf("["), end = str.indexOf("]");
+		if(start != -1 && end != -1){
+			// get vector
+			if(start >= end) throw " bad argument\n";
+			mode = 1; // vector conversion mode
+			vect = str.slice(start+1,end).split(",");
+			if(vect.length != 3) throw " not a valid 3-D coordinate\n";
+			for(let i = 0;i<3;i++){
+				if(vect[i].length == 0) throw " not a number\n";
+				vect[i] /= 1;
+				if( isNaN(vect[i]) ) throw " not a number\n";
+			}
 		}
-	}
-	
-	if(mode*from*into == 0) return error;
-	if(from == into) return "sama";
-	
-	var pos, vect;
-	check = str.split("(",2);
-	check = check[1].split(")",1);
-	pos = check[0].split(",");
-	for(var i = 0;i<pos.length;i++){
-		pos[i] /= 1;
-		if(pos[i] == NaN || pos[i] == undefined) return error;
-	}
-	
-	if(mode == 1){
-		check = str.split("[",2);
-		check = check[1].split("]",1);
-		vect = check[0].split(",");
-		for(var i = 0;i<vect.length;i++){
-			vect[i] /= 1;
-			if(vect[i] == NaN || vect[i] == undefined) return error;
+		else mode = 0; // position conversion only
+		
+		start = str.indexOf("("), end = str.indexOf(")");
+		if(start != -1 && end != -1){
+			// get position
+			if(start >= end) throw " bad argument\n";
+			pos = str.slice(start+1,end).split(",");
+			if(pos.length != 3) throw " not a valid 3-D coordinate\n";
+			for(let i = 0;i<3;i++){
+				if(pos[i].length == 0) throw " not a number\n";
+				pos[i] /= 1;
+				if( isNaN(pos[i]) ) throw " not a number\n";
+			}			
 		}
+		else throw " bad argument\n";
+	} catch(e){
+		return error + e;
 	}
 	
 	result += ">> Konversi titik\n";
 	result += "Rumus:\n";
 	
-	var newpos = [0,0,0];
+	let newpos = [0,0,0];
 	if(from == 1){
 		if(into == 2){
 			// kartesian ke silinder
@@ -58,9 +72,9 @@ module.exports.convertCoordinates = function konversi(str){
 			newpos[1] = Math.atan2(pos[1], pos[0])/Math.PI*180;
 			newpos[2] = pos[2];
 			
-			result += ("r".padEnd(3) + "= sqrt( x^2 + y^2 )\n" + " ".padEnd(3) + "= " + newpos[0].toFixed(3) + "\n");
-			result += ("\u03C6".padEnd(3) + "= atan( y / x )\n" + " ".padEnd(3) + "= " + newpos[1].toFixed(3) + "\n");
-			result += ("z".padEnd(3) + "= z\n" + " ".padEnd(3) + "= " + newpos[2].toFixed(3) + "\n");
+			result += ("r  = sqrt( x^2 + y^2 )\n   = " + newpos[0].toFixed(3) + "\n");
+			result += ("\u03C6  = atan( y / x )\n   = " + newpos[1].toFixed(3) + "\n"); 
+			result += ("z  = z\n   = " + newpos[2].toFixed(3) + "\n");
 		}
 		else if(into == 3){
 			// kartesian ke bola
@@ -68,9 +82,9 @@ module.exports.convertCoordinates = function konversi(str){
 			newpos[1] = Math.atan2(Math.sqrt(pos[0]**2 + pos[1]**2), pos[2])/Math.PI*180;
 			newpos[2] = Math.atan2(pos[1], pos[0])/Math.PI*180;
 			
-			result += ("r".padEnd(3) + "= sqrt( x^2 + y^2 + z^2 )\n" + " ".padEnd(3) + "= " + newpos[0].toFixed(3) + "\n");
-			result += ("\u03B8".padEnd(3) + "= atan( (x^2 + y^2) / z )\n" + " ".padEnd(3) + "= " + newpos[1].toFixed(3) + "\n");
-			result += ("\u03C6".padEnd(3) + "= atan( y / x )\n" + " ".padEnd(3) + "= " + newpos[2].toFixed(3) + "\n");
+			result += ("r  = sqrt( x^2 + y^2 + z^2 )\n   = " + newpos[0].toFixed(3) + "\n");
+			result += ("\u03B8  = atan( (x^2 + y^2) / z )\n   = " + newpos[1].toFixed(3) + "\n");
+			result += ("\u03C6  = atan( y / x )\n   = " + newpos[2].toFixed(3) + "\n");
 		}
 	}
 	else if(from == 2){
@@ -80,9 +94,9 @@ module.exports.convertCoordinates = function konversi(str){
 			newpos[1] = pos[0] * Math.sin(pos[1] * Math.PI/180);
 			newpos[2] = pos[2];
 			
-			result += ("x".padEnd(3) + "= r * cos(\u03C6)\n" + " ".padEnd(3) + "= " + newpos[0].toFixed(3) + "\n");
-			result += ("y".padEnd(3) + "= r * sin(\u03C6)\n" + " ".padEnd(3) + "= " + newpos[1].toFixed(3) + "\n");
-			result += ("z".padEnd(3) + "= z\n" + " ".padEnd(3) + "= " + newpos[2].toFixed(3) + "\n");
+			result += ("x  = r * cos(\u03C6)\n   = " + newpos[0].toFixed(3) + "\n");
+			result += ("y  = r * sin(\u03C6)\n   = " + newpos[1].toFixed(3) + "\n");
+			result += ("z  = z\n   = " + newpos[2].toFixed(3) + "\n");
 		}
 		else if(into == 3){
 			// silinder ke bola
@@ -90,9 +104,9 @@ module.exports.convertCoordinates = function konversi(str){
 			newpos[1] = Math.atan2(pos[0], pos[2])/Math.PI*180;
 			newpos[2] = pos[1];
 			
-			result += ("r".padEnd(3) + "= sqrt( r^2 + z^2 )\n" + " ".padEnd(3) + "= " + newpos[0].toFixed(3) + "\n");
-			result += ("\u03B8".padEnd(3) + "= atan( r / z )\n" + " ".padEnd(3) + "= " + newpos[1].toFixed(3) + "\n");
-			result += ("\u03C6".padEnd(3) + "= \u03C6\n" + " ".padEnd(3) + "= " + newpos[2].toFixed(3) + "\n");
+			result += ("r  = sqrt( r^2 + z^2 )\n   = " + newpos[0].toFixed(3) + "\n");
+			result += ("\u03B8  = atan( r / z )\n   = " + newpos[1].toFixed(3) + "\n");
+			result += ("\u03C6  = \u03C6\n   = " + newpos[2].toFixed(3) + "\n");
 		}
 	}
 	else if(from == 3){
@@ -102,9 +116,9 @@ module.exports.convertCoordinates = function konversi(str){
 			newpos[1] = pos[0] * sin(pos[1] * Math.PI/180) * sin(pos[2] * Math.PI/180);
 			newpos[2] = pos[0] * cos(pos[1] * Math.PI/180);
 			
-			result += ("r".padEnd(3) + "= r * sin(\u03B8) * cos(\u03C6)\n" + " ".padEnd(3) + "= " + newpos[0].toFixed(3) + "\n");
-			result += ("\u03B8".padEnd(3) + "= r * sin(\u03B8) * sin(\u03C6)\n" + " ".padEnd(3) + "= " + newpos[1].toFixed(3) + "\n");
-			result += ("\u03C6".padEnd(3) + "= r * cos(\u03B8)\n" + " ".padEnd(3) + "= " + newpos[2].toFixed(3) + "\n");
+			result += ("r  = r * sin(\u03B8) * cos(\u03C6)\n   = " + newpos[0].toFixed(3) + "\n");
+			result += ("\u03B8  = r * sin(\u03B8) * sin(\u03C6)\n   = " + newpos[1].toFixed(3) + "\n");
+			result += ("\u03C6  = r * cos(\u03B8)\n   = " + newpos[2].toFixed(3) + "\n");
 		}
 		else if(into == 2){
 			// bola ke silinder
@@ -112,20 +126,20 @@ module.exports.convertCoordinates = function konversi(str){
 			newpos[1] = pos[2];
 			newpos[2] = pos[0] * Math.cos(pos[1] * Math.PI/180);
 			
-			result += ("r".padEnd(3) + "= r * sin(\u03B8)\n" + " ".padEnd(3) + "= " + newpos[0].toFixed(3) + "\n");
-			result += ("\u03C6".padEnd(3) + "\u03C6\n" + " ".padEnd(3) + "= " + newpos[1].toFixed(3) + "\n");
-			result += ("z".padEnd(3) + "= r * cos(\u03B8)\n" + " ".padEnd(3) + "= " + newpos[2].toFixed(3) + "\n");
+			result += ("r  = r * sin(\u03B8)\n   = " + newpos[0].toFixed(3) + "\n");
+			result += ("\u03C6  = \u03C6\n   = " + newpos[1].toFixed(3) + "\n");
+			result += ("z  = r * cos(\u03B8)\n   = " + newpos[2].toFixed(3) + "\n");
 		}
 	}
 	
-	if(mode == 1){
+	if(mode){
 		result += ">> Konversi vektor\n";
 		result += "Rumus:\n";
 		
-		var m0 = [0,0,0];
-		var m1 = [0,0,0];
-		var m2 = [0,0,0];
-		var newvect = [0,0,0];
+		let m0 = [0,0,0];
+		let m1 = [0,0,0];
+		let m2 = [0,0,0];
+		let newvect = [0,0,0];
 		
 		if(from == 1){
 			if(into == 2){
@@ -219,7 +233,7 @@ module.exports.convertCoordinates = function konversi(str){
 
 	//Use markdown
 	result = "```\n" + result;
-	result += "```\n"
+	result += "```\n";
 	
 	return result;
 }
