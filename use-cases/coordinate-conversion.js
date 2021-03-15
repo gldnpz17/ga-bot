@@ -112,9 +112,9 @@ module.exports.convertCoordinates = function konversi(str){
 	else if(from == 3){
 		if(into == 1){
 			// bola ke kartesian
-			newpos[0] = pos[0] * sin(pos[1] * Math.PI/180) * cos(pos[2] * Math.PI/180);
-			newpos[1] = pos[0] * sin(pos[1] * Math.PI/180) * sin(pos[2] * Math.PI/180);
-			newpos[2] = pos[0] * cos(pos[1] * Math.PI/180);
+			newpos[0] = pos[0] * Math.sin(pos[1] * Math.PI/180) * Math.cos(pos[2] * Math.PI/180);
+			newpos[1] = pos[0] * Math.sin(pos[1] * Math.PI/180) * Math.sin(pos[2] * Math.PI/180);
+			newpos[2] = pos[0] * Math.cos(pos[1] * Math.PI/180);
 			
 			result += ("r  = r * sin(\u03B8) * cos(\u03C6)\n   = " + newpos[0].toFixed(3) + "\n");
 			result += ("\u03B8  = r * sin(\u03B8) * sin(\u03C6)\n   = " + newpos[1].toFixed(3) + "\n");
