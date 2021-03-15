@@ -43,7 +43,7 @@ bot.addFunctionality((event) => event.type === 'leave', async (event) => {
   configureBotUseCase.removeConversation(event.source.groupId);
 });
 
-bot.addFunctionality((event) => /^konversi .*/.test(event.command.raw), async (event) => {
+bot.addFunctionality((event) => (event.command.raw === undefined) ? false : /^konversi .*/.test(event.command.raw), async (event) => {
   console.log(`converting coordinates. argument: ${event.command.raw}`);
 
   await lineClient.replyMessage(event.replyToken, {
