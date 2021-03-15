@@ -24,8 +24,9 @@ bot.err(async (event, err) => {
       text: err.message
     });
   } else {
-    console.log('an error occured in one of the commands.');
-    console.log(JSON.stringify(err));
+    console.log('An error occured in one of the commands.');
+    console.log(err.message);
+    console.log(JSON.stringify(err.stack));
   }
 });
 
