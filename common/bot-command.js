@@ -21,6 +21,8 @@ module.exports.BotCommand = class CommandPipeline {
         }
       } catch(err) {
         await this.errorHandler(event, err);
+
+        break;
       }
     }
   }

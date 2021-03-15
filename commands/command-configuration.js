@@ -23,6 +23,8 @@ bot.err(async (event, err) => {
       type: 'text',
       text: err.message
     });
+  } else {
+    console.log(JSON.stringify(err));
   }
 });
 
