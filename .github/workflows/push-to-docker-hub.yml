@@ -1,0 +1,28 @@
+name: Push to docker hub
+
+on:
+  push:
+    branches: [ production ]
+  workflow_dispatch:
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        ref: 'production'
+
+    - name: Build the Docker image
+      run: docker build . --file "Dockerfile" --tag "ga-bot:latest" .
+    
+    - name: Login to Docker Hub
+      env: 
+        ACCESS_TOKEN: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+      run: docker login --username gldnpz --password $ACCESS_TOKEN
+    
+    - name: Push to registry
+      run: docker push "gldnpz/ga-bot:latest"
