@@ -1,0 +1,14 @@
+#docker-related
+**/.dockerignore
+**/Dockerfile
+#git-related
+**/.git
+**/.gitignore
+#vscode-related
+**/.vs
+**/.vscode
+#node-specific
+**/node_modules
+/client-app/build
+#sensitive
+**/.env

@@ -42,4 +42,8 @@ app.use((err, req, res, next) => {
   console.log(JSON.stringify(err.stack));
 });
 
+app.listen(config.port, () => {
+  console.log(`Server started on port ${config.port}`);
+});
+
 module.exports = app;
