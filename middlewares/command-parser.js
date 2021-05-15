@@ -1,4 +1,5 @@
 const config = require('../config');
+const { getNickname } = require('../use-cases/get-nickname');
 
 module.exports.commandParser = async (req, res, next) => {
   try {
@@ -8,8 +9,8 @@ module.exports.commandParser = async (req, res, next) => {
       }
       if (event.type === 'message' && event.message.type === 'text') {
         let text = event.message.text;
-          
-        if (new RegExp(`^@${config.botName}.*`).test(event.message.text)) {
+
+        if (new RegExp(`^@${await getNickname(event.source.groupId) ?? config.botName}.*`).test(event.message.text)) {
           let command = text.match(new RegExp(`^@${config.botName} (.*?)(\n|$)`))[1];
 
           let commandComponents = command.split(' ');

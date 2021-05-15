@@ -7,6 +7,7 @@ const ApplicationError = require('../common/application-error');
 const configureBotUseCase = require('../use-cases/configure-bot');
 const processMessageUseCase = require('../use-cases/process-message');
 const { convertCoordinates } = require('../use-cases/coordinate-conversion');
+const setNicknameUseCase = require('../use-cases/set-nickname');
 
 const line = require('@line/bot-sdk');
 const lineConfig = {
@@ -77,6 +78,19 @@ bot.addFunctionality((event) => event.command?.name === 'remove-configuration', 
   await lineClient.replyMessage(event.replyToken, {
     type: 'text',
     text: 'Configuration removed.'
+  });
+});
+
+bot.addFunctionality(event => event.command?.name === 'set-nickname', async (event) => {
+  let nickname = event.command.args[0];
+
+  console.log(`Attempting to set nickname ${nickname} for group ${event.source.groupId}.`);
+
+  await setNicknameUseCase.setNickname(event.source.groupId, nickname);
+
+  await lineClient.replyMessage(event.replyToken, {
+    type: 'text',
+    text: `Nickname set to ${nickname}.`
   });
 });
 
