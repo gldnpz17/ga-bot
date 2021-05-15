@@ -11,7 +11,7 @@ module.exports.commandParser = async (req, res, next) => {
         let text = event.message.text;
 
         if (new RegExp(`^@(${await getNickname(event.source.groupId) ?? config.botName})|(${config.botName}).*`).test(event.message.text)) {
-          let command = text.match(new RegExp(`^@${config.botName} (.*?)(\n|$)`))[1];
+          let command = text.match(new RegExp(`^@(${await getNickname(event.source.groupId) ?? config.botName})|(${config.botName}) (.*?)(\n|$)`))[1];
 
           let commandComponents = command.split(' ');
 
