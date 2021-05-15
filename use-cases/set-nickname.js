@@ -8,6 +8,6 @@ module.exports.setNickname = async (groupChatId, nickname) => {
 
     await chatConfig.save();
 
-    console.log(`Nickname set. groupId: ${groupId}, nickname: ${nickname}.`);
+    console.log(`Nickname set. groupId: ${groupChatId}, nickname: ${nickname}.`);
   }
 };
