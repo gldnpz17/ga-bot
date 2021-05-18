@@ -71,7 +71,7 @@ Displays the given counter's current value.
 ```
 @GaBot view-counter my_label
 OR
-@GaBot vc my_label 420
+@GaBot vc my_label
 ```
 
 ### View a counter's history
@@ -79,5 +79,5 @@ Displays the given counter's change history.
 ```
 @GaBot history-counter my_label
 OR
-@GaBot hc my_label 420
+@GaBot hc my_label
 ```
