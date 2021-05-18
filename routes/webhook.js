@@ -19,7 +19,7 @@ router.post('/', line.middleware(lineConfig), requestLogger, commandParser, asyn
   req.body.events.map(async (event) => {
     try {
       let groupId = event.source.groupId;
-      if (groupId === null) {
+      if (groupId === null || groupId === undefined) {
         await lineClient.replyMessage(event.replyToken, {
           type: 'text',
           text: 'This bot only works in group chats.'

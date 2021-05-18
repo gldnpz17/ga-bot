@@ -8,6 +8,8 @@ const configureBotUseCase = require('../use-cases/configure-bot');
 const processMessageUseCase = require('../use-cases/process-message');
 const { convertCoordinates } = require('../use-cases/coordinate-conversion');
 const setNicknameUseCase = require('../use-cases/set-nickname');
+const setCounterDataUseCase = require('../use-cases/set-counter-data');
+const getCounterDataUseCase = require('../use-cases/get-counter-data');
 
 const line = require('@line/bot-sdk');
 const lineConfig = {
@@ -18,6 +20,7 @@ const lineClient = new line.Client(lineConfig);
 
 const bot = new BotCommand();
 
+// Error handler.
 bot.err(async (event, err) => {
   if (err instanceof ApplicationError) {
     await lineClient.replyMessage(event.replyToken, {
@@ -31,6 +34,7 @@ bot.err(async (event, err) => {
   }
 });
 
+// Initialize group chat.
 bot.addFunctionality((event) => event.type === 'join', async (event) => {
   await configureBotUseCase.initializeConversation(event.source.groupId);
     
@@ -40,10 +44,12 @@ bot.addFunctionality((event) => event.type === 'join', async (event) => {
   });
 });
 
+// Erase data when kicked out of group chat.
 bot.addFunctionality((event) => event.type === 'leave', async (event) => {
   configureBotUseCase.removeConversation(event.source.groupId);
 });
 
+// Coordinate conversion.
 bot.addFunctionality((event) => /^konversi .*/.test(event.command?.raw), async (event) => {
   console.log(`converting coordinates. argument: ${event.command.raw}`);
 
@@ -53,6 +59,7 @@ bot.addFunctionality((event) => /^konversi .*/.test(event.command?.raw), async (
   });
 });
 
+// Add configuration.
 bot.addFunctionality((event) => event.command?.name === 'add-configuration', async (event) => {
   await configureBotUseCase.addConfiguration(event.source.groupId, JSON.parse(event.command.body));
 
@@ -62,6 +69,7 @@ bot.addFunctionality((event) => event.command?.name === 'add-configuration', asy
   });
 });
 
+// List configurations.
 bot.addFunctionality((event) => event.command?.name === 'list-configurations', async (event) => {
   let result = await configureBotUseCase.listConfigurations(event.source.groupId);
 
@@ -71,6 +79,7 @@ bot.addFunctionality((event) => event.command?.name === 'list-configurations', a
   });
 });
 
+// Remove configurations.
 bot.addFunctionality((event) => event.command?.name === 'remove-configuration', async (event) => {
   console.log(`Attempting to remove configuration ${event.command.args[0]}`);
   await configureBotUseCase.removeConfiguration(event.source.groupId, event.command.args[0]);
@@ -81,6 +90,7 @@ bot.addFunctionality((event) => event.command?.name === 'remove-configuration', 
   });
 });
 
+// Set nickname.
 bot.addFunctionality(event => event.command?.name === 'set-nickname', async (event) => {
   let nickname = event.command.args[0];
 
@@ -94,6 +104,98 @@ bot.addFunctionality(event => event.command?.name === 'set-nickname', async (eve
   });
 });
 
+// Initialize counter.
+bot.addFunctionality(event => event.command?.name === 'initialize-counter' || event.command?.name === 'ic', async (event) => {
+  let label = event.command.args[0];
+  
+  console.log(`Attempting to initialize ${label} counter for ${event.source.userId}.`);
+
+  await setCounterDataUseCase.initializeCounter(event.source.userId, label);
+
+  await lineClient.replyMessage(event.replyToken, {
+    type: 'text',
+    text: `${label} counter initialized for user ${event.source.userId}.`
+  });
+});
+
+// Set counter value.
+bot.addFunctionality(event => event.command?.name === 'set-counter' || event.command?.name === 'sc', async (event) => {
+  let label = event.command.args[0];
+  let amount = event.command.args[1];
+
+  console.log(`Attempting to set ${label} counter to ${amount} for user ${event.source.userId}.`);
+
+  await setCounterDataUseCase.setCounterValue(event.source.userId, amount, label);
+
+  await lineClient.replyMessage(event.replyToken, {
+    type: 'text',
+    text: `${label} counter value set to ${amount}.`
+  });
+});
+
+// Add counter.
+bot.addFunctionality(event => event.command?.name === 'add-counter' || event.command?.name === 'ac', async (event) => {
+  let label = event.command.args[0];
+  let amount = event.command.args[1];
+
+  console.log(`Attempting to increase counter ${label} by ${amount} for user ${event.source.userId}`);
+
+  await setCounterDataUseCase.incrementCounter(event.source.userId, amount, label);
+
+  await lineClient.replyMessage(event.replyToken, {
+    type: 'text',
+    text: `Added ${amount} to the ${label} counter.`
+  });
+});
+
+// Reset counter.
+bot.addFunctionality(event => event.command?.name === 'reset-counter' || event.command?.name === 'rc', async (event) => {
+  let label = event.command.args[0];
+  
+  console.log(`Attempting to reset the ${label} counter for user ${event.source.userId}`);
+
+  await setCounterDataUseCase.resetCounter(event.source.userId, label);
+
+  await lineClient.replyMessage(event.replyToken, {
+    type: 'text',
+    text: `${label} counter reset.`
+  });
+});
+
+// View counter value
+bot.addFunctionality(event => event.command?.name === 'view-counter' || event.command?.name === 'vc', async (event) => {
+  let label = event.command.args[0]
+
+  console.log(`Attempting to show ${label} counter's value for user ${event.source.userId}`);
+
+  let pity = await getCounterDataUseCase.getCurrentValue(event.source.userId, label);
+
+  await lineClient.replyMessage(event.replyToken, {
+    type: 'text',
+    text: `${label} counter's value: ${pity}`
+  });
+});
+
+// View counter history
+bot.addFunctionality(event => event.command?.name === 'history-counter' || event.command?.name === 'hc', async (event) => {
+  let label = event.command.args[0];
+
+  console.log(`Attempting to show ${label} counter's history for user ${event.source.userId}`);
+
+  let histories = await getCounterDataUseCase.getHistories(event.source.userId, label);
+
+  let message = '';
+  histories.map(history => {
+    message += `${history.note}\n`;
+  });
+
+  await lineClient.replyMessage(event.replyToken, {
+    type: 'text',
+    text: message
+  });
+});
+
+// Show help.
 bot.addFunctionality((event) => event.command?.name === 'help', async (event) => {
   await lineClient.replyMessage(event.replyToken, {
     type: 'text',
@@ -101,6 +203,7 @@ bot.addFunctionality((event) => event.command?.name === 'help', async (event) =>
   });
 });
 
+// Unknown command.
 bot.addFunctionality((event) => event.command !== null && event.command !== undefined, async (event) => {
   await lineClient.replyMessage(event.replyToken, {
     type: 'text',
@@ -108,6 +211,7 @@ bot.addFunctionality((event) => event.command !== null && event.command !== unde
   });
 });
 
+// Reply to messages.
 bot.addFunctionality((event) => event.type === 'message' && event.message.type === 'text', async (event) => {
   let reply = await processMessageUseCase.replyToMessage(event.source.groupId, event.message.text);
 
