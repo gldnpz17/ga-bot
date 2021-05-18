@@ -33,24 +33,24 @@ module.exports.initializeCounter = async (userId, label) => {
     newCounterProfile.save((err, doc) => {
       console.log(`Initialized new pity counter profile. doc: ${doc}`);
     });
-  } else {
-    // If there's a pre-existing counter with a label, throw an error.
-    let preExistingCounters = profile.counters.find(counter => counter.label === label);
-    if (preExistingCounters === null || preExistingCounters === undefined) {
-      throw new ApplicationError(`A counter with the label ${label} has already existed.`);
-    }
-
-    profile.counters.push({
-      label: label,
-      count: 0,
-      history: [{
-        timestamp: new Date(),
-        note: `Initialized the ${label} counter.`
-      }]
-    });
-
-    await profile.save();
   }
+  
+  // If there's a pre-existing counter with a label, throw an error.
+  let preExistingCounters = profile.counters.find(counter => counter.label === label);
+  if (preExistingCounters === null || preExistingCounters === undefined) {
+    throw new ApplicationError(`A counter with the label ${label} has already existed.`);
+  }
+
+  profile.counters.push({
+    label: label,
+    count: 0,
+    history: [{
+      timestamp: new Date(),
+      note: `Initialized the ${label} counter.`
+    }]
+  });
+
+  await profile.save();
 };
 
 module.exports.setCounterValue = async (userId, amount, label) => {
