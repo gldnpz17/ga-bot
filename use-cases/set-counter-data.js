@@ -34,10 +34,10 @@ module.exports.initializeCounter = async (userId, label) => {
       console.log(`Initialized new pity counter profile. doc: ${doc}`);
     });
   }
-  
+
   // If there's a pre-existing counter with a label, throw an error.
   let preExistingCounters = profile.counters.find(counter => counter.label === label);
-  if (preExistingCounters === null || preExistingCounters === undefined) {
+  if (!(preExistingCounters === null || preExistingCounters === undefined)) {
     throw new ApplicationError(`A counter with the label ${label} has already existed.`);
   }
 
