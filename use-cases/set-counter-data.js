@@ -72,7 +72,7 @@ module.exports.incrementCounter = async (userId, amount, label) => {
 
   let counter = await getCounter(profile, label);
 
-  counter.count += amount;
+  counter.count += Number.parseInt(amount);
   counter.history.push({
     timestamp: new Date(),
     note: `Incremented by ${amount}.`
