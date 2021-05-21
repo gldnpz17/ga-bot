@@ -30,9 +30,7 @@ module.exports.initializeCounter = async (userId, label) => {
       counters: []
     });
 
-    newCounterProfile.save((err, doc) => {
-      console.log(`Initialized new pity counter profile. doc: ${doc}`);
-    });
+    await newCounterProfile.save();
   }
 
   // If there's a pre-existing counter with a label, throw an error.
