@@ -32,7 +32,7 @@ module.exports.initializeCounter = async (userId, label) => {
 
     await newCounterProfile.save();
 
-    profile = await Models.CounterProfile.findOne({ userId: userId }).exec();
+    profile = newCounterProfile;
   }
 
   // If there's a pre-existing counter with a label, throw an error.
