@@ -31,7 +31,7 @@ const sortByTimestamp = (first, second) => {
 }
 
 module.exports.dumpUnunsend = async (groupChatId, amount) => {
-  let messageHistory = getGroupChatMessageHistory(groupChatId);
+  let messageHistory = await getGroupChatMessageHistory(groupChatId);
   let unsentMessages = messageHistory.unsentMessages;
   
   if (amount > 0 && amount < unsentMessages.length) {
@@ -42,7 +42,7 @@ module.exports.dumpUnunsend = async (groupChatId, amount) => {
 };
 
 module.exports.pushUnunsend = async (groupChatId, messageId) => {
-  let messageHistory = getGroupChatMessageHistory(groupChatId);
+  let messageHistory = await getGroupChatMessageHistory(groupChatId);
   
   let unsentMessage = messageHistory.unsentMessages.find(message => message.id === messageId);
   if (unsentMessage === null || unsentMessage === undefined) {
@@ -62,7 +62,7 @@ module.exports.pushUnunsend = async (groupChatId, messageId) => {
 };
 
 module.exports.popUnunsend = async (groupChatId, amount) => {
-  let messageHistory = getGroupChatMessageHistory(groupChatId);
+  let messageHistory = await getGroupChatMessageHistory(groupChatId);
   let unsentMessages = messageHistory.unsentMessages;
   
   while (amount > 0) {
@@ -74,7 +74,7 @@ module.exports.popUnunsend = async (groupChatId, amount) => {
 };
 
 module.exports.logMessage = async (timestamp, source, message) => {
-  let messageHistory = getGroupChatMessageHistory(source.groupId);
+  let messageHistory = await getGroupChatMessageHistory(source.groupId);
   
   messageHistory.messages.push({
     id: message.id,
