@@ -10,6 +10,7 @@ const { convertCoordinates } = require('../use-cases/coordinate-conversion');
 const setNicknameUseCase = require('../use-cases/set-nickname');
 const setCounterDataUseCase = require('../use-cases/set-counter-data');
 const getCounterDataUseCase = require('../use-cases/get-counter-data');
+const configureUnunsendUseCase = require('../use-cases/configure-ununsend');
 
 const line = require('@line/bot-sdk');
 const lineConfig = {
@@ -195,6 +196,43 @@ bot.addFunctionality(event => event.command?.name === 'history-counter' || event
   });
 });
 
+// Un-unsend
+bot.addFunctionality((event) => event.type === 'unsend', async (event) => {
+  await configureUnunsendUseCase.pushUnunsend(event.source.groupId, event.unsend.messageId);
+  
+  console.log(`message ${event.unsend.messageId} is added to the unsend log`);
+});
+
+// Show unsent messages
+bot.addFunctionality((event) => event.command?.name === 'ununsend', async (event) => {
+  let amount = event.command.args[0];
+  let messages = await configureUnunsendUseCase.dumpUnunsend(event.source.groupId, Number.parseInt(amount));
+  
+  let reply = '';
+  messages.forEach(message => {
+    let date = new Date(message.timestamp).toUTCString();
+    reply += `[${date}] @${message.userId}: ${message.text}\n`
+  });
+  
+  if(reply !== null) {
+    await lineClient.replyMessage(event.replyToken, {
+      type: 'text',
+      text: reply
+    });
+  }
+});
+
+// Delete ununsent messages
+bot.addFunctionality((event) => event.command?.name === 'unununsend', async (event) => {
+  let amount = event.command.args[0];
+  await configureUnunsendUseCase.popUnunsend(event.source.groupId, Number.parseInt(amount));
+  
+  await lineClient.replyMessage(event.replyToken, {
+    type: 'text',
+    text: `Unununsent ${Number.parseInt(amount)} message(s)`
+  });
+});
+
 // Show help.
 bot.addFunctionality((event) => event.command?.name === 'help', async (event) => {
   await lineClient.replyMessage(event.replyToken, {
@@ -213,6 +251,8 @@ bot.addFunctionality((event) => event.command !== null && event.command !== unde
 
 // Reply to messages.
 bot.addFunctionality((event) => event.type === 'message' && event.message.type === 'text', async (event) => {
+  await configureUnunsendUseCase.logMessage(event.timestamp, event.source, event.message);
+  
   let reply = await processMessageUseCase.replyToMessage(event.source.groupId, event.message.text);
 
   console.log(`Received reply: ${reply}. Sending...`);
