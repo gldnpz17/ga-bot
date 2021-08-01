@@ -56,9 +56,10 @@ module.exports.dumpUnunsend = async (groupChatId, amount) => {
   }
 
   // Get username.
-  unsentMessages.forEach(message => {
-    message.username = await getUsername(groupChatId, message.userId);
-  });
+  for (let index = 0; index < unsentMessages.length; index++) {
+    message = unsentMessages[index];
+    message.username = await getUsername(groupChatId, message.userId);    
+  }
   
   return unsentMessages;
 };
