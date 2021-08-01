@@ -1,3 +1,4 @@
+const ApplicationError = require('../common/application-error');
 const Models = require('../models/models');
 
 const getGroupChatMessageHistory = async (groupChatId) => {
@@ -44,7 +45,7 @@ module.exports.dumpUnunsend = async (groupChatId, amount) => {
 module.exports.pushUnunsend = async (groupChatId, messageId) => {
   let messageHistory = await getGroupChatMessageHistory(groupChatId);
   
-  let unsentMessage = messageHistory.unsentMessages.find(message => message.id === messageId);
+  let unsentMessage = messageHistory.messages.find(message => message.id === messageId);
   if (unsentMessage === null || unsentMessage === undefined) {
     throw new ApplicationError(`Cannot find a message with the id ${messageId}.`);
   }
