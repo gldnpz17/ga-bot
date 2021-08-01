@@ -211,7 +211,7 @@ bot.addFunctionality((event) => event.command?.name === 'ununsend', async (event
   let reply = '';
   messages.forEach(message => {
     let date = new Date(message.timestamp).toUTCString();
-    reply += `[${date}] @${message.userId}: ${message.text}\n`
+    reply += `[${date}] @${message.username}: ${message.text}\n`
   });
   
   if(reply !== null) {

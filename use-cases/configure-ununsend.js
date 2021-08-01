@@ -1,5 +1,7 @@
 const ApplicationError = require('../common/application-error');
 const Models = require('../models/models');
+const axios = require('axios').default;
+const config = require('../config');
 
 const getGroupChatMessageHistory = async (groupChatId) => {
   let messageHistory = await Models.GroupChatMessageHistory.findOne({ groupChatId: groupChatId }).exec();
@@ -21,6 +23,20 @@ const getGroupChatMessageHistory = async (groupChatId) => {
   return messageHistory;
 };
 
+const getUsername = async (groupId, userId) => {
+  try {
+    let response = await axios.get(`https://api.line.me/v2/bot/group/${groupId}/member/${userId}`, {
+      headers: {
+        'Authorization': `Bearer ${config.channelAccessToken}`
+      }
+    });
+  
+    return response.data.displayName;
+  } catch(error) {
+    throw new ApplicationError('Error fetching username.');
+  }
+}
+
 const sortByTimestamp = (first, second) => {
   if (first.timestamp < second.timestamp) {
     return -1;
@@ -38,6 +54,11 @@ module.exports.dumpUnunsend = async (groupChatId, amount) => {
   if (amount > 0 && amount < unsentMessages.length) {
     unsentMessages = unsentMessages.slice(-amount);
   }
+
+  // Get username.
+  unsentMessages.forEach(message => {
+    message.username = await getUsername(groupChatId, message.userId);
+  });
   
   return unsentMessages;
 };
