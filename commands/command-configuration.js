@@ -214,12 +214,14 @@ bot.addFunctionality((event) => event.command?.name === 'ununsend', async (event
     reply += `[${date}+7] @${message.username}: ${message.text}\n`
   });
   
-  if(reply !== null) {
-    await lineClient.replyMessage(event.replyToken, {
-      type: 'text',
-      text: reply
-    });
+  if (reply === '') {
+    reply = 'No unsent messages to show.';
   }
+  
+  await lineClient.replyMessage(event.replyToken, {
+    type: 'text',
+    text: reply
+  });
 });
 
 // Delete ununsent messages
