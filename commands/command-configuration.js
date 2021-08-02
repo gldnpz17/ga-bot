@@ -210,8 +210,8 @@ bot.addFunctionality((event) => event.command?.name === 'ununsend', async (event
   
   let reply = '';
   messages.forEach(message => {
-    let date = new Date(message.timestamp).toUTCString();
-    reply += `[${date}] @${message.username}: ${message.text}\n`
+    let date = new Date(message.timestamp + 7*3600*1000).toUTCString();
+    reply += `[${date}+7] @${message.username}: ${message.text}\n`
   });
   
   if(reply !== null) {
@@ -225,11 +225,11 @@ bot.addFunctionality((event) => event.command?.name === 'ununsend', async (event
 // Delete ununsent messages
 bot.addFunctionality((event) => event.command?.name === 'unununsend', async (event) => {
   let amount = event.command.args[0];
-  await configureUnunsendUseCase.popUnunsend(event.source.groupId, Number.parseInt(amount));
+  let reply = await configureUnunsendUseCase.popUnunsend(event.source.groupId, Number.parseInt(amount), event.source.userId);
   
   await lineClient.replyMessage(event.replyToken, {
     type: 'text',
-    text: `Unununsent ${Number.parseInt(amount)} message(s)`
+    text: `Unununsent ${reply.count} message(s).\n${reply.notes}`
   });
 });
 
