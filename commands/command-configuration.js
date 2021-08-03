@@ -256,7 +256,17 @@ bot.addFunctionality(event => event.command?.name === 'revoke-auth-sessions', as
     type: 'text',
     text: `Auth sessions revoked. Users are now logged out from all devices.`
   });
-})
+});
+
+// Get archive size.
+bot.addFunctionality(event => event.type === 'message' && event.command?.name === 'check-storage-use', async (event) => {
+  let data = await calculateUsage(event.source.groupId);
+
+  await lineClient.replyMessage(event.replyToken, {
+    type: 'text',
+    text: `File archive storage use: ${data.totalSize} MB (${data.fileCount} file(s)).`
+  });
+});
 
 // Show help.
 bot.addFunctionality((event) => event.command?.name === 'help', async (event) => {
@@ -281,16 +291,6 @@ bot.addFunctionality(event => event.type === 'message' && ['image', 'video', 'au
   await lineClient.replyMessage(event.replyToken, {
     type: 'text',
     text: `Archive URL: https://${config.serverDomainName}/archive/${fileId}`
-  });
-});
-
-// Get archive size.
-bot.addFunctionality(event => event.type === 'message' && event.command?.name === 'check-storage-use', async (event) => {
-  let data = await calculateUsage(event.source.groupId);
-
-  await lineClient.replyMessage(event.replyToken, {
-    type: 'text',
-    text: `File archive storage use: ${data.totalSize} MB (${data.fileCount} file(s)).`
   });
 });
 
