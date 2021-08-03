@@ -27,7 +27,7 @@ module.exports.login = async (key) => {
 
     let session = new Models.AuthSession({
       token: token,
-      groupChatId: groupChatId
+      groupChatId: config.groupChatId
     });
 
     await session.save();
