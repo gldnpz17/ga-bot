@@ -285,7 +285,7 @@ bot.addFunctionality(event => event.type === 'message' && ['image', 'video', 'au
 });
 
 // Get archive size.
-bot.addFunctionality(event => event.type === 'message' && event?.command === 'check-storage-use', async (event) => {
+bot.addFunctionality(event => event.type === 'message' && event.command?.name === 'check-storage-use', async (event) => {
   let data = await calculateUsage(event.source.groupId);
 
   await lineClient.replyMessage(event.replyToken, {
