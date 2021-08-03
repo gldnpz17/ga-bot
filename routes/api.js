@@ -8,7 +8,7 @@ const limiter = rateLimit({
   max: 60
 });
 
-router.get('/login', limiter, express.json(), cookieParser(), async (req, res) => {
+router.post('/login', limiter, express.json(), cookieParser(), async (req, res) => {
   let dto = req.body;
 
   let authToken = await authenticationUseCase.login(dto.key);

@@ -5,6 +5,7 @@ document.getElementById('login-form').addEventListener('submit', async (event) =
   let data = new FormData(event.target);
 
   let response = await fetch('/api/login', {
+    method: 'POST',
     body: JSON.stringify({
       key: data.get('group-chat-key')
     })
