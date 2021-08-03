@@ -9,10 +9,10 @@ module.exports.generateKey = async (groupChatId) => {
 
   if (config) {
     let key = generateRandomToken(64);
-    console.log(botConfig.bcryptHashRounds);
     config.hashedKey = await bcrypt.hash(key, botConfig.bcryptHashRounds);
     await config.save();
 
+    console.log(`Key generated for ${groupChatId}`)
     return key;
   } else {
     throw new ApplicationError('Group chat doesn\'t exist.');
