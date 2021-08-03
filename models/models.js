@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const groupChatConfigSchema = new mongoose.Schema({
   groupChatId: String,
   nickname: String,
+  hashedKey: String,
   configs: [{
     configName: String,
     regex: String,
@@ -45,6 +46,20 @@ const groupChatMessageHistorySchema = new mongoose.Schema({
   }]
 });
 
+const authSessionSchema = new mongoose.Schema({
+  token: String,
+  groupChatId: String
+});
+
+const fileArchiveSchema = new mongoose.Schema({
+  groupChatId: String,
+  fileId: String,
+  originalFilename: String,
+  timestamp: Number
+});
+
 module.exports.GroupChatConfig = mongoose.model('GroupChatConfig', groupChatConfigSchema);
 module.exports.CounterProfile = mongoose.model('CounterProfile', counterProfileSchema);
 module.exports.GroupChatMessageHistory = mongoose.model('GroupChatHistory', groupChatMessageHistorySchema);
+module.exports.AuthSession = mongoose.model('AuthSession', authSessionSchema);
+module.exports.FileArchive = mongoose.model('FileArchive', fileArchiveSchema);

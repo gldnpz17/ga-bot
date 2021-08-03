@@ -37,6 +37,7 @@ var app = express();
 app.use(logger('dev'));
 app.use('/webhook', webhookRouter);
 app.use('/status', statusRouter);
+app.use(express.static(path.join(__dirname, 'public')));
 app.use((err, req, res, next) => {
   console.log(err.message);
   console.log(JSON.stringify(err.stack));

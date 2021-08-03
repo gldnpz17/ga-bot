@@ -13,6 +13,8 @@ const getCounterDataUseCase = require('../use-cases/get-counter-data');
 const configureUnunsendUseCase = require('../use-cases/configure-ununsend');
 
 const line = require('@line/bot-sdk');
+const { archiveFile } = require('../use-cases/archive-file');
+const authenticationUseCase = require('../use-cases/authentication');
 const lineConfig = {
   channelAccessToken: config.channelAccessToken,
   channelSecret: config.channelSecret
@@ -222,7 +224,7 @@ bot.addFunctionality((event) => event.command?.name === 'ununsend', async (event
   }
 });
 
-// Delete ununsent messages
+// Delete ununsent messages.
 bot.addFunctionality((event) => event.command?.name === 'unununsend', async (event) => {
   let amount = event.command.args[0];
   await configureUnunsendUseCase.popUnunsend(event.source.groupId, Number.parseInt(amount));
@@ -232,6 +234,26 @@ bot.addFunctionality((event) => event.command?.name === 'unununsend', async (eve
     text: `Unununsent ${Number.parseInt(amount)} message(s)`
   });
 });
+
+// Generate key.
+bot.addFunctionality(event => event.command?.name === 'generate-key', async (event) => {
+  let key = await authenticationUseCase.generateKey(event.source.groupId);
+
+  await lineClient.replyMessage(event.replyToken, {
+    type: 'text',
+    text: `This key is equivalent to this group chat\'s password. Please keep it safe :)\n\nkey: ${key}.`
+  });
+});
+
+// Revoke auth sessions.
+bot.addFunctionality(event => event.command?.name === 'revoke-auth-sessions', async (event) => {
+  await authenticationUseCase.revokeAuthSessions(event.source.groupId);
+
+  await lineClient.replyMessage(event.replyToken, {
+    type: 'text',
+    text: `Auth sessions revoked. Users are now logged out from all devices.`
+  });
+})
 
 // Show help.
 bot.addFunctionality((event) => event.command?.name === 'help', async (event) => {
@@ -246,6 +268,16 @@ bot.addFunctionality((event) => event.command !== null && event.command !== unde
   await lineClient.replyMessage(event.replyToken, {
     type: 'text',
     text: 'Command unknown. Type `@BacodBot help` if you need some help.'
+  });
+});
+
+// Archive files.
+bot.addFunctionality(event => event.type === 'message' && ['image', 'video', 'audio', 'file'].includes(event.message.type), async (event) => {
+  let fileId = await archiveFile(event.source.groupId, event.message.id, event.timestamp, event.message?.fileName);
+  
+  await lineClient.replyMessage(event.replyToken, {
+    type: 'text',
+    text: `Archive URL: https://${config.serverDomainName}/archive/${fileId}`
   });
 });
 
