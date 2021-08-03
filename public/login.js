@@ -1,6 +1,6 @@
-document.getElementById('login-form-container').addEventListener('submit', async (event) => {
+document.getElementById('login-form').addEventListener('submit', async (event) => {
   event.preventDefault();
-  
+  console.log('Sending login request...');
 
   let data = new FormData(event.target);
 
