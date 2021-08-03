@@ -18,9 +18,12 @@ document.getElementById('login-form').addEventListener('submit', async (event) =
       break;
     case 500:
       alert(await response.text());
+      break;
     case 429:
       alert('Whoa whoa whoa. Slow down, this endpoint\'s rate-limited.');
+      break;
     default:
       alert('Error logging in.');
+      break;
   }
 });
