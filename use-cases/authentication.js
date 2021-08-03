@@ -10,7 +10,6 @@ module.exports.generateKey = async (groupChatId) => {
   if (config) {
     let key = generateRandomToken(64);
     config.hashedKey = await bcrypt.hash(key, botConfig.bcryptHashRounds);
-    console.log(`Reached here.`);
     await config.save();
 
     console.log(`Key generated for ${groupChatId}.`);

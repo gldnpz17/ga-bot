@@ -7,7 +7,7 @@ const config = {
   botName: process.env.BOT_NAME,
   fileArchiveDirectory: process.env.FILE_ARCHIVE_DIRECTORY ?? '/var/lib/gabot',
   serverDomainName: process.env.SERVER_DOMAIN_NAME ?? 'gabot.gldnpz.com',
-  bcryptHashRounds: process.env.BCRYPT_HASH_ROUNDS ? parseInt(process.env.BCRYPT_HASH_ROUNDS) : 32
+  bcryptHashRounds: process.env.BCRYPT_HASH_ROUNDS ? parseInt(process.env.BCRYPT_HASH_ROUNDS) : 10
 }
 
 module.exports = config;
