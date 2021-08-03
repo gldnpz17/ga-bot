@@ -45,13 +45,11 @@ module.exports.archiveFile = async (groupChatId, messageId, timestamp, originalF
   let fileId = generateRandomToken(64);
   
   let response = await downloadLineFile(messageId, config.fileArchiveDirectory, fileId);
-
-  console.log(JSON.stringify(response.headers));
-
+  
   let archiveFile = new Models.FileArchive({
     groupChatId: groupChatId,
     fileId: fileId,
-    originalFilename: originalFilename ?? `${fileId}.${getExtensionFromContentType(response.headers['Content-Type'])}`,
+    originalFilename: originalFilename ?? `${fileId}.${getExtensionFromContentType(response.headers['content-type'])}`,
     timestamp: timestamp
   });
 
