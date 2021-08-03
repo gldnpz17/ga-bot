@@ -71,11 +71,10 @@ module.exports.calculateUsage = async (groupChatId) => {
   let files = await Models.FileArchive.find({ groupChatId: groupChatId }).exec();
 
   let totalSize = 0;
-  let fileCount = 0;
-  files.forEach(file => {
-    totalSize += await getFileSize(file.fileId);
-    fileCount++;
-  });
+  let fileCount = files.length;
+  for (let x = 0; x < files.length; x++) {
+    totalSize += await getFileSize(files[x].fileId);
+  }
 
   return ({
     totalSize: Math.round(totalSize / (1024 * 1024)),
