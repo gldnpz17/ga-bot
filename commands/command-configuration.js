@@ -244,7 +244,7 @@ bot.addFunctionality(event => event.command?.name === 'generate-key', async (eve
 
   await lineClient.replyMessage(event.replyToken, {
     type: 'text',
-    text: `This key is equivalent to this group chat\'s password. Please keep it safe :)\n\nkey: ${key}.`
+    text: `This key is equivalent to this group chat\'s password. Please keep it safe :)\n\nkey: ${key}`
   });
 });
 
