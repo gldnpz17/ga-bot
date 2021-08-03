@@ -11,18 +11,22 @@ const limiter = rateLimit({
 router.post('/login', limiter, express.json(), cookieParser(), async (req, res) => {
   let dto = req.body;
 
-  let authToken = await authenticationUseCase.login(dto.key);
+  if (dto.key) {
+    let authToken = await authenticationUseCase.login(dto.key);
 
-  if (authToken) {
-    res.cookie('Auth-Token', authToken, {
-      secure: true,
-      httpOnly: true
-    });
-
-    res.sendStatus(200);
+    if (authToken) {
+      res.cookie('Auth-Token', authToken, {
+        secure: true,
+        httpOnly: true
+      });
+  
+      res.sendStatus(200);
+    } else {
+      res.status = 500;
+      res.send('Invalid key');
+    }
   } else {
-    res.status = 500;
-    res.send('Invalid key');
+    res.sendStatus(400);
   }
 });
 
