@@ -15,11 +15,11 @@ module.exports.authentication = async (req, res, next) => {
       console.log('Invalid token. Challenging.');
       res.clearCookie('AuthToken');
 
-      res.redirect(401, `/login?continue=${req.originalUrl}`);
+      res.redirect(401, `/login.html?continue=${req.originalUrl}`);
     }
   } else {
     console.log('Unauthenticated. Challenging.');
 
-    res.redirect(401, `/login?continue=${req.originalUrl}`);
+    res.redirect(401, `/login.html?continue=${req.originalUrl}`);
   }
 }
