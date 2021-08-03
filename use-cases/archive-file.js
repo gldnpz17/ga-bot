@@ -46,6 +46,8 @@ module.exports.archiveFile = async (groupChatId, messageId, timestamp, originalF
   
   let response = await downloadLineFile(messageId, config.fileArchiveDirectory, fileId);
 
+  console.log(JSON.stringify(response));
+
   let archiveFile = new Models.FileArchive({
     groupChatId: groupChatId,
     fileId: fileId,
