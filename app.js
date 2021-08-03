@@ -20,8 +20,12 @@ let statusRouter = require('./routes/status');
 const { requestLogger } = require('./middlewares/request-logger');
 
 const configureScheduledTasksUseCase = require('./use-cases/configure-scheduled-tasks');
+const { mkdir, mkdirSync } = require('fs');
 
-// Initialize scheduled tasks
+// Initialize directories.
+mkdirSync(config.fileArchiveDirectory, { recursive: true });
+
+// Initialize scheduled tasks.
 Models.GroupChatConfig.find({}).exec().then(groupChatConfigs => {
   groupChatConfigs.map(groupChatConfig => {
     let groupChatId = groupChatConfig.groupChatId;
