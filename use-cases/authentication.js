@@ -8,8 +8,7 @@ module.exports.generateKey = async (groupChatId) => {
   let config = await Models.GroupChatConfig.findOne({ groupChatId: groupChatId }).exec();
 
   if (config) {
-    let key = generateRandomToken(64);
-    config.hashedKey = await bcrypt.hash(key, botConfig.bcryptHashRounds);
+    config.key = generateRandomToken(64);
     await config.save();
 
     console.log(`Key generated for ${groupChatId}.`);
@@ -20,9 +19,7 @@ module.exports.generateKey = async (groupChatId) => {
 }
 
 module.exports.login = async (key) => {
-  let hashedKey = await bcrypt.hash(key, botConfig.bcryptHashRounds);
-
-  let config = await Models.GroupChatConfig.findOne({ hashedKey: hashedKey }).exec();
+  let config = await Models.GroupChatConfig.findOne({ key: key }).exec();
 
   if (config) {
     let token = generateRandomToken(256);

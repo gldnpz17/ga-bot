@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const groupChatConfigSchema = new mongoose.Schema({
   groupChatId: String,
   nickname: String,
-  hashedKey: String,
+  key: String,
   configs: [{
     configName: String,
     regex: String,
