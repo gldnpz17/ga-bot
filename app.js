@@ -17,6 +17,8 @@ var logger = require('morgan');
 
 let webhookRouter = require('./routes/webhook');
 let statusRouter = require('./routes/status');
+let apiRouter = require('./routes/api');
+let archiveRouter = require('./routes/archive');
 const { requestLogger } = require('./middlewares/request-logger');
 
 const configureScheduledTasksUseCase = require('./use-cases/configure-scheduled-tasks');
@@ -41,6 +43,8 @@ var app = express();
 app.use(logger('dev'));
 app.use('/webhook', webhookRouter);
 app.use('/status', statusRouter);
+app.use('/api', apiRouter);
+app.use('/archive', archiveRouter);
 app.use(express.static(path.join(__dirname, 'public')));
 app.use((err, req, res, next) => {
   console.log(err.message);
