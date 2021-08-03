@@ -239,6 +239,7 @@ bot.addFunctionality((event) => event.command?.name === 'unununsend', async (eve
 
 // Generate key.
 bot.addFunctionality(event => event.command?.name === 'generate-key', async (event) => {
+  console.log(`Generating key for group : ${event.source.groupId}`);
   let key = await authenticationUseCase.generateKey(event.source.groupId);
 
   await lineClient.replyMessage(event.replyToken, {
