@@ -35,6 +35,15 @@ const downloadLineFile = async (messageId, directory, filename) => {
   return response;
 };
 
+// Returns the file size in bytes.
+const getFileSize = (filename) => {
+  return new Promise((resolve, reject) => {
+    fs.stat(path.join(config.fileArchiveDirectory, filename), (err, stats) => {
+      resolve(stats.size);
+    });
+  });
+};
+
 const getExtensionFromContentType = (contentType) => contentType.match(/.*\/(.*)/)[1];
 
 module.exports.getArchivedFile = async (fileId) => {
@@ -56,4 +65,20 @@ module.exports.archiveFile = async (groupChatId, messageId, timestamp, originalF
   await archiveFile.save();
 
   return fileId;
+}
+
+module.exports.calculateUsage = async (groupChatId) => {
+  let files = await Models.FileArchive.find({ groupChatId: groupChatId }).exec();
+
+  let totalSize = 0;
+  let fileCount = 0;
+  files.forEach(file => {
+    totalSize += await getFileSize(file.fileId);
+    fileCount++;
+  });
+
+  return ({
+    totalSize: Math.round(totalSize / (1024 * 1024)),
+    fileCount: fileCount 
+  }); 
 }

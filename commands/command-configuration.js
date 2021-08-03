@@ -13,7 +13,7 @@ const getCounterDataUseCase = require('../use-cases/get-counter-data');
 const configureUnunsendUseCase = require('../use-cases/configure-ununsend');
 
 const line = require('@line/bot-sdk');
-const { archiveFile } = require('../use-cases/archive-file');
+const { archiveFile, calculateUsage } = require('../use-cases/archive-file');
 const authenticationUseCase = require('../use-cases/authentication');
 const lineConfig = {
   channelAccessToken: config.channelAccessToken,
@@ -281,6 +281,16 @@ bot.addFunctionality(event => event.type === 'message' && ['image', 'video', 'au
   await lineClient.replyMessage(event.replyToken, {
     type: 'text',
     text: `Archive URL: https://${config.serverDomainName}/archive/${fileId}`
+  });
+});
+
+// Get archive size.
+bot.addFunctionality(event => event.type === 'message' && event?.command === 'check-storage-use', async (event) => {
+  let data = await calculateUsage(event.source.groupId);
+
+  await lineClient.replyMessage(event.replyToken, {
+    type: 'text',
+    text: `File archive storage use: ${data.totalSize} MB (${data.fileCount} file(s)).`
   });
 });
 
