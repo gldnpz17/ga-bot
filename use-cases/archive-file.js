@@ -9,10 +9,18 @@ const util = require('util');
 const generateRandomToken = require('../utilities/generate-random-token');
 
 const finished = util.promisify(stream.finished);
+
 const downloadLineFile = async (messageId, directory, filename) => {
   let fileUrl = `https://api-data.line.me/v2/bot/message/${messageId}/content`;
 
   const writer = fs.createWriteStream(path.join(directory, filename));
+
+  let opened = new Promise((resolve, reject) => {
+    writer.on('open', () => resolve());
+    writer.on('error', reject);
+  })
+
+  await opened;
   
   let response = await axios.get(fileUrl, {
     responseType: 'stream',
