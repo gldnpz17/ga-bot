@@ -8,7 +8,8 @@ module.exports.generateKey = async (groupChatId) => {
   let config = await Models.GroupChatConfig.findOne({ groupChatId: groupChatId }).exec();
 
   if (config) {
-    config.key = generateRandomToken(64);
+    let key = generateRandomToken(64)
+    config.key = key;
     await config.save();
 
     console.log(`Key generated for ${groupChatId}.`);
