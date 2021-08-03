@@ -7,8 +7,8 @@ module.exports.authentication = async (req, res, next) => {
     let session = await getAuthSession(token);
 
     if (session) {
-      req.authSession = await getAuthSession();
       console.log('Authentication passed.');
+      req.authSession = session;
 
       next();
     } else {
