@@ -8,13 +8,14 @@ module.exports.authentication = async (req, res, next) => {
 
     if (session) {
       req.authSession = await getAuthSession();
+      console.log('Authentication passed.');
 
       next();
     } else {
+      console.log('Unauthenticated. Challenging.');
       res.clearCookie('AuthToken');
 
-      res.status(401); // 401 Unauthorized.
-      res.redirect(`/login?continue=${req.originalUrl}`);
+      res.redirect(401, `/login?continue=${req.originalUrl}`);
     }
   }
 }
