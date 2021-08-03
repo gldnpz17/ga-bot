@@ -4,6 +4,7 @@ const Models = require('../models/models');
 const axios = require('axios').default;
 const stream = require('stream');
 var path = require('path');
+const fs = require('fs');
 const util = require('util');
 const generateRandomToken = require('../utilities/generate-random-token');
 
@@ -11,7 +12,7 @@ const finished = util.promisify(stream.finished);
 const downloadLineFile = async (messageId, directory, filename) => {
   let fileUrl = `https://api-data.line.me/v2/bot/message/${messageId}/content`;
 
-  const writer = createWriteStream(path.join(directory, filename));
+  const writer = fs.createWriteStream(path.join(directory, filename));
   
   let response = await axios.get(fileUrl, {
     responseType: 'stream',
