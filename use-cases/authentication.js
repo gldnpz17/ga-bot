@@ -34,7 +34,7 @@ module.exports.login = async (key) => {
 
     return token;
   } else {
-    throw new ApplicationError('Group chat doesn\'t exist.');
+    return null;
   }
 }
 
