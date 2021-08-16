@@ -98,7 +98,7 @@ module.exports.popUnunsend = async (groupChatId, amount, initiatorId) => {
   
   let temp = [];
   while (amount > 0) {
-    deletedMessage = unsentMessages.pop();
+    let deletedMessage = unsentMessages.pop();
     if (deletedMessage.userId === initiatorId && Date.now() - deletedMessage.timestamp < ONE_HOUR) {
       temp.unshift(deletedMessage);
     }
