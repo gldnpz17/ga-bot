@@ -90,10 +90,10 @@ module.exports.popUnunsend = async (groupChatId, amount, initiatorId) => {
   let messageHistory = await getGroupChatMessageHistory(groupChatId);
   
   let unsentMessages = messageHistory.unsentMessages;
-  let maxUnsentAmount = unsentMessages.length;
+  const maxUnsentAmount = unsentMessages.length;
   
   if (amount > maxUnsentAmount) {
-      amount = maxUnsentAmount
+      amount = maxUnsentAmount;
   }
   
   let temp = [];
@@ -104,11 +104,12 @@ module.exports.popUnunsend = async (groupChatId, amount, initiatorId) => {
     }
     amount--;
   }
-  unsentMessages = unsentMessages.concat(temp);
+  let remainingMessages = unsentMessages.concat(temp);
   
-  let successCount = maxUnsentAmount - unsentMessages.length;
+  let successCount = maxUnsentAmount - remainingMessages.length;
   let notes = (temp.length != 0) ? `Cannot delete ${temp.length} message(s) of your own unless one hour has passed.` : '';
-
+  
+  messageHistory.unsentMessages = remainingMessages;
   await messageHistory.save();
   
   return { count: successCount, notes: notes };
