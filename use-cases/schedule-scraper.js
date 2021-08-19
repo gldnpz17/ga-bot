@@ -1,6 +1,41 @@
 const Models = require('../models/models');
 const ApplicationError = require('../common/application-error');
 
+const getSchedule = async () => {
+  let schedule = await Models.Schedule.find({}).exec();
+  if (schedule == null) {
+    // If no existing schedule, create one.
+    let newSchedule = new Models.Schedule({});
+
+    newSchedule.save((err, doc) => {
+      console.log(`Initialized new schedule profile. doc: ${doc}`);
+    });
+    
+    schedule = newSchedule;
+  }
+  
+  return schedule;
+};
+
+const getScheduleProfile = async (groupChatId) => {
+  let scheduleProfile = await Models.ScheduleProfile.findOne({ groupChatId: groupId }).exec();
+  if (scheduleProfile == null) {
+    // If no existing schedule profile, create one.
+    let newScheduleProfile = new Models.ScheduleProfile({
+      groupChatId: groupChatId,
+      profiles: []
+    });
+
+    newScheduleProfile.save((err, doc) => {
+      console.log(`Initialized new schedule profile. doc: ${doc}`);
+    });
+    
+    scheduleProfile = newScheduleProfile;
+  }
+  
+  return scheduleProfile;
+};
+
 const printMatkul = (entry) => {
   let result = '';
   result += `===================================\n`
@@ -21,7 +56,7 @@ const filterByName = async (name, schedules) => {
 };
 
 const filterByProfile = async (groupId, profileName, schedules) => {
-  let profile = await Models.ScheduleProfile.findOne({ groupChatId: groupId }).exec()?.profiles?.find(entry => entry.name === profileName);
+  let profile = await getScheduleProfile(groupId).profiles?.find(entry => entry.name === profileName);
   let result = '';
 
   if (profile?.matkul?.length > 0) {
@@ -56,7 +91,7 @@ module.exports.search = async (groupId, profileName) => {
 };
 
 module.exports.addProfile = async (groupId, profileItems) => {
-  let profile = await Models.ScheduleProfile.findOne({ groupChatId: groupId }).exec();
+  let profile = await getScheduleProfile(groupId);
   let status = '';
 
   if (profileItems.name == null || profileItems.name?.length == 0) {
@@ -81,7 +116,7 @@ module.exports.addProfile = async (groupId, profileItems) => {
 };
 
 module.exports.removeProfile = async (groupId, profileName) => {
-  let profile = await Models.ScheduleProfile.findOne({ groupChatId: groupId }).exec();
+  let profile = await getScheduleProfile(groupId);
   let status = '';
 
   let index = profile.findIndex(profile => profile.name === profileName);
