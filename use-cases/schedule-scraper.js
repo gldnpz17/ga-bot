@@ -14,7 +14,10 @@ const printMatkul = (entry) => {
 module.exports.getByName = async (groupId, profileName) => {
   let jadwals = await Models.Jadwalkuliah.find({}).exec();
   let result = '';
-
+  if (profileName == null) {
+    return JSON.stringify(jadwals[0]);
+  }
+  
   let profile = (await Models.JadwalkuliahProfile.findOne({ groupChatId: groupId }).exec())?.profiles.find( profile => profile.name === profileName);
   let regex = new RegExp(profileName, 'i');
   let jadwal = jadwals.filter(jadwal => regex.test(jadwal["Matakuliah"]));
