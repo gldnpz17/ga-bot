@@ -75,8 +75,8 @@ const filterByProfile = async (groupId, profileName, schedules) => {
 };
 
 module.exports.search = async (groupId, profileName) => {
-  let schedules = await Models.Schedule.find({}).exec();
-  if (schedules == null || schedules?.length == 0){
+  let schedules = await getSchedule();
+  if (schedules == null){
     throw new ApplicationError("Error fetching schedules.");
   }
   let foo = "foo";
