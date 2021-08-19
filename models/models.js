@@ -81,5 +81,5 @@ module.exports.CounterProfile = mongoose.model('CounterProfile', counterProfileS
 module.exports.GroupChatMessageHistory = mongoose.model('GroupChatHistory', groupChatMessageHistorySchema);
 module.exports.AuthSession = mongoose.model('AuthSession', authSessionSchema);
 module.exports.FileArchive = mongoose.model('FileArchive', fileArchiveSchema);
-module.exports.Jadwalkuliah = mongoose.model('Schedule', scheduleSchema);
-module.exports.JadwalkuliahProfile = mongoose.model('ScheduleProfile', scheduleProfileSchema);
+module.exports.Schedule = mongoose.model('Schedule', scheduleSchema);
+module.exports.ScheduleProfile = mongoose.model('ScheduleProfile', scheduleProfileSchema);
