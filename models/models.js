@@ -58,8 +58,28 @@ const fileArchiveSchema = new mongoose.Schema({
   timestamp: Number
 });
 
+const jadwalkuliahSchema = new mongoose.Schema({
+  "#": Number,
+  "Hari/Jam": String,
+  Matakuliah: String,
+  Kelas: String,
+  Dosen: String,
+  URL: [],
+  Keterangan: []
+});
+
+const jadwalkuliahProfileSchema = new mongoose.Schema({
+  groupChatId: String,
+  profiles: [{
+    name: String,
+    matkul: [],
+  }]
+});
+
 module.exports.GroupChatConfig = mongoose.model('GroupChatConfig', groupChatConfigSchema);
 module.exports.CounterProfile = mongoose.model('CounterProfile', counterProfileSchema);
 module.exports.GroupChatMessageHistory = mongoose.model('GroupChatHistory', groupChatMessageHistorySchema);
 module.exports.AuthSession = mongoose.model('AuthSession', authSessionSchema);
 module.exports.FileArchive = mongoose.model('FileArchive', fileArchiveSchema);
+module.exports.Jadwalkuliah = mongoose.model('Jadwalkuliah', jadwalkuliahSchema);
+module.exports.JadwalkuliahProfile = mongoose.model('JadwalkuliahProfile', jadwalkuliahProfileSchema)

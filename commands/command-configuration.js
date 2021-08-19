@@ -11,6 +11,7 @@ const setNicknameUseCase = require('../use-cases/set-nickname');
 const setCounterDataUseCase = require('../use-cases/set-counter-data');
 const getCounterDataUseCase = require('../use-cases/get-counter-data');
 const configureUnunsendUseCase = require('../use-cases/configure-ununsend');
+const schedulescraperUseCase = require('../use-cases/schedule-scraper');
 
 const line = require('@line/bot-sdk');
 const { archiveFile, calculateUsage } = require('../use-cases/archive-file');
@@ -234,6 +235,39 @@ bot.addFunctionality((event) => event.command?.name === 'unununsend', async (eve
   await lineClient.replyMessage(event.replyToken, {
     type: 'text',
     text: `Unununsent ${reply.count} message(s).\n${reply.notes}`
+  });
+});
+
+// Get schedulescraper by name.
+bot.addFunctionality((event) => event.command?.name === 'jadwalkuliah', async (event) => {
+  let name = event.command.args.join(" ");
+
+  reply = await schedulescraperUseCase.getByName(event.source.groupId, name);
+  await lineClient.replyMessage(event.replyToken, {
+    type: 'text',
+    text: reply
+  });
+});
+
+// Add schedulescraper batch command.
+bot.addFunctionality((event) => event.command?.name === 'add-jadwalkuliah', async (event) => {
+  let items = JSON.parse(command.body);
+
+  reply = await schedulescraperUseCase.addProfile(event.source.groupId, items);
+  await lineClient.replyMessage(event.replyToken, {
+    type: 'text',
+    text: reply
+  });
+});
+
+// Delete schedulescraper batch command.
+bot.addFunctionality((event) => event.command?.name === 'remove-jadwalkuliah', async (event) => {
+  let name = event.command.args.join(" ");
+
+  reply = await schedulescraperUseCase.removeProfile(event.source.groupId, name);
+  await lineClient.replyMessage(event.replyToken, {
+    type: 'text',
+    text: reply
   });
 });
 
