@@ -79,14 +79,14 @@ module.exports.search = async (groupId, profileName) => {
   if (schedules == null){
     throw new ApplicationError("Error fetching schedules.");
   }
-  let foo = "foo";
-  let result = filterByName(profileName, schedules) || filterByProfile(groupId, profileName, schedules);
+  
+  let result = await filterByName(profileName, schedules) || await filterByProfile(groupId, profileName, schedules);
 
   if (result) {
-    return foo + result;
+    return result;
   }
   else {
-    return foo + `No result for ${profileName.toString()}.`
+    return `No result for ${profileName.toString()}.`
   }
 };
 
