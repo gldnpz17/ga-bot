@@ -13,10 +13,7 @@ const printMatkul = (entry) => {
 
 module.exports.getByName = async (groupId, profileName) => {
   let jadwals = await Models.Jadwalkuliah.find({}).exec();
-  let result = '';
-  if (profileName == null) {
-    return JSON.stringify(jadwals[0]);
-  }
+  let result = JSON.stringify(jadwals[0]);
   
   let profile = (await Models.JadwalkuliahProfile.findOne({ groupChatId: groupId }).exec())?.profiles.find( profile => profile.name === profileName);
   let regex = new RegExp(profileName, 'i');
@@ -39,7 +36,7 @@ module.exports.getByName = async (groupId, profileName) => {
     }
   }
   else {
-    result = `No result for ${profileName}`;
+    result += `No result for ${profileName}`;
   }
 
   return result;
