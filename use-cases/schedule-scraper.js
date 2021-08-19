@@ -7,50 +7,63 @@ const printMatkul = (entry) => {
          + `Matakuliah: ${entry["Matakuliah"]}\n`
          + `Kelas: ${entry["Kelas"]} (${entry["Hari/Jam"]})\n`
          + `Dosen: ${entry["Dosen"]}\n`
-         + `URL: ${entry["URL"].join('\n')}`;
+         + `URL:\n${entry["URL"].join('\n ')}\n`;
   return result;
 };
 
-module.exports.getByName = async (groupId, profileName) => {
-  let jadwals = await Models.Jadwalkuliah.find({}).exec();
-  let result = JSON.stringify(jadwals[0]);
-  
-  let profile = (await Models.JadwalkuliahProfile.findOne({ groupChatId: groupId }).exec())?.profiles.find( profile => profile.name === profileName);
-  let regex = new RegExp(profileName, 'i');
-  let jadwal = jadwals.filter(jadwal => regex.test(jadwal["Matakuliah"]));
-  
-  if (jadwal?.length > 0){
-    for(let i = 0;i<jadwal.length;i++){
-      result += printMatkul(jadwal[i]);
-    }
-  }
-  else if (profile?.matkul?.length > 0){
-    for(let i = 0;i<profile.matkul.length;i++){
-        regex = profile.matkul[i];
-        jadwal = jadwals.filter(jadwal => regex.test(jadwal["Matakuliah"]));
-        if (jadwal?.length > 0){
-          for(let i = 0;i<jadwal.length;i++){
-            result += printMatkul(jadwal[i]);
-          }
+const filterByName = async (name, schedules) => {
+  let result = '';
+  schedules = schedules.filter(entry => new RegExp(name, 'i').test(entry)).forEach((entry) => {
+    result += printMatkul(entry);
+  });
+
+  return (result !== '') ? result : null;
+};
+
+const filterByProfile = async (groupId, profileName, schedules) => {
+  let profile = await Models.ScheduleProfile.findOne({ groupChatId: groupId }).exec()?.profiles?.find(entry => entry.name === profileName);
+  let result = '';
+
+  if (profile?.matkul?.length > 0) {
+    let added_entries = [];
+    for (let i = 0;i<profile.matkul.length;i++){
+      schedules.filter(entry => new RegExp(profile.matkul[i], 'i').test(entry)).forEach((entry) => {
+        if(!added_entries.includes(entry['#'])){
+          added_entries.push(entry['#']);
+          result += printMatkul(entry);
         }
+      });
     }
-  }
-  else {
-    result += `No result for ${profileName}`;
   }
 
-  return result;
+  return (result !== '') ? result : null;
+};
+
+module.exports.search = async (groupId, profileName) => {
+  let schedules = await Models.Schedule.find({}).exec();
+  if (schedules == null || schedules?.length == 0){
+    throw new ApplicationError("Error fetching schedules.");
+  }
+
+  let result = filterByName(profileName, schedules) || filterByProfile(groupId, profileName, schedules);
+
+  if (result) {
+    return result;
+  }
+  else {
+    return `No result for ${profileName.toString()}.`
+  }
 };
 
 module.exports.addProfile = async (groupId, profileItems) => {
-  let profile = await Models.JadwalkuliahProfile.findOne({ groupId: groupId }).exec();
+  let profile = await Models.ScheduleProfile.findOne({ groupChatId: groupId }).exec();
   let status = '';
 
-  if (profileItems.name === null || profileItems.name === undefined) {
+  if (profileItems.name == null || profileItems.name?.length == 0) {
     throw new ApplicationError('Error name');
   };
 
-  if (profileItems.matkul === null || profileItems.matkul === undefined) {
+  if (profileItems.matkul == null || profileItems.matkul?.length == 0) {
     throw new ApplicationError('Error matkul');
   };
 
@@ -68,7 +81,7 @@ module.exports.addProfile = async (groupId, profileItems) => {
 };
 
 module.exports.removeProfile = async (groupId, profileName) => {
-  let profile = await Models.JadwalkuliahProfile.findOne({ groupId: groupId }).exec();
+  let profile = await Models.ScheduleProfile.findOne({ groupChatId: groupId }).exec();
   let status = '';
 
   let index = profile.findIndex(profile => profile.name === profileName);

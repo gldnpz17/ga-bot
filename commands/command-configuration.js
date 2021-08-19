@@ -242,7 +242,7 @@ bot.addFunctionality((event) => event.command?.name === 'unununsend', async (eve
 bot.addFunctionality((event) => event.command?.name === 'jadwalkuliah', async (event) => {
   let name = event.command.args?.join(" ");
 
-  reply = await schedulescraperUseCase.getByName(event.source.groupId, name);
+  reply = await schedulescraperUseCase.search(event.source.groupId, name);
   await lineClient.replyMessage(event.replyToken, {
     type: 'text',
     text: reply
