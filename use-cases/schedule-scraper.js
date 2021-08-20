@@ -56,7 +56,7 @@ const filterByName = async (name, schedules) => {
 };
 
 const filterByProfile = async (groupId, profileName, schedules) => {
-  let profile = await getScheduleProfile(groupId).profiles?.find(entry => entry.name === profileName);
+  let profile = await getScheduleProfile(groupId).profiles?.find(entry => entry?.name === profileName);
   let result = '';
 
   if (profile?.matkul?.length > 0) {
@@ -80,13 +80,20 @@ module.exports.search = async (groupId, profileName) => {
     throw new ApplicationError("Error fetching schedules.");
   }
   
-  let result = await filterByName(profileName, schedules) || await filterByProfile(groupId, profileName, schedules);
+  try {
+    let result = await filterByName(profileName, schedules);
+    if (result == null) {
+      result = await filterByProfile(groupId, profileName, schedules);
+    }
 
-  if (result) {
-    return result;
-  }
-  else {
-    return `No result for ${profileName.toString()}.`
+    if (result != null) {
+      return result;
+    }
+    else {
+      return `No result for ${profileName.toString()}.`;
+    }
+  } catch (err) {
+    return `Error: ${err}`;
   }
 };
 
