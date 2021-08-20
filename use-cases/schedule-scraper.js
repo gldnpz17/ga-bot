@@ -18,7 +18,7 @@ const getSchedule = async () => {
 };
 
 const getScheduleProfile = async (groupChatId) => {
-  let scheduleProfile = await Models.ScheduleProfile.findOne({ groupChatId: groupId }).exec();
+  let scheduleProfile = await Models.ScheduleProfile.findOne({ groupChatId: groupChatId }).exec();
   if (scheduleProfile == null) {
     // If no existing schedule profile, create one.
     let newScheduleProfile = new Models.ScheduleProfile({
