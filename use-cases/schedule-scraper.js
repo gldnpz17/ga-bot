@@ -42,7 +42,7 @@ const printMatkul = (entry) => {
          + `Matakuliah: ${entry["Matakuliah"]}\n`
          + `Kelas: ${entry["Kelas"]} (${entry["Hari/Jam"]})\n`
          + `Dosen: ${entry["Dosen"]}\n`
-         + `URL:\n${entry["URL"].join('\n ')}\n`;
+         + `URL:\n${entry["URL"].join('\n - ')}\n`;
   return result;
 };
 
@@ -62,7 +62,7 @@ const filterByProfile = async (groupId, profileName, schedules) => {
   if (profile?.matkul?.length > 0) {
     let added_entries = [];
     for (let i = 0;i<profile.matkul.length;i++){
-      schedules.filter(entry => new RegExp(profile.matkul[i], 'i').test(entry)).forEach((entry) => {
+      schedules.filter(entry => new RegExp(profile.matkul[i], 'i').test(entry['Matakuliah'])).forEach((entry) => {
         if(!added_entries.includes(entry['#'])){
           added_entries.push(entry['#']);
           result += printMatkul(entry);
@@ -118,7 +118,7 @@ module.exports.addProfile = async (groupId, profileItems) => {
   profile.profiles.push(profileItems);
   await profile.save();
 
-  status += `Added profiles. profiles: ${profileItems}`;
+  status += `Added profiles. profile name: ${profileItems.name}`;
   return status;
 };
 
@@ -126,7 +126,7 @@ module.exports.removeProfile = async (groupId, profileName) => {
   let profile = await getScheduleProfile(groupId);
   let status = '';
 
-  let index = profile.findIndex(profile => profile.name === profileName);
+  let index = profile.profiles.findIndex(profile => profile.name === profileName);
   if (index !== -1) {
     profile.profiles.splice(index, 1);
     await profile.save();
