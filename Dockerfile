@@ -1,4 +1,4 @@
-FROM node:15.5.0-slim
+FROM node:17.0.1-slim
 ENV NODE_ENV=production
 
 EXPOSE 80
