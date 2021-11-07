@@ -29,7 +29,7 @@ const sortByTimestamp = (first, second) => {
 
 module.exports.dumpUnunsend = async (groupChatId, amount) => {
   // Fetch unsent messages.
-  let messages = await Models.MessageHistory
+  let query = Models.MessageHistory
     .aggregate([
       {
         '$match': {
@@ -46,8 +46,12 @@ module.exports.dumpUnunsend = async (groupChatId, amount) => {
         ]
       }
     ])
-    .limit(amount)
-    .exec()
+  
+  if (amount) {
+    query.limit(amount);
+  }
+
+  let messages = await query.exec();
 
   if (!messages) {
     throw new ApplicationError('No unsent messages to show.')
