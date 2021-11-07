@@ -242,7 +242,7 @@ bot.addFunctionality((event) => event.command?.name === 'unununsend', async (eve
 bot.addFunctionality((event) => event.command?.name === 'jadwalkuliah', async (event) => {
   let name = event.command.args?.join(" ");
 
-  reply = await schedulescraperUseCase.search(event.source.groupId, name);
+  let reply = await schedulescraperUseCase.search(event.source.groupId, name);
   await lineClient.replyMessage(event.replyToken, {
     type: 'text',
     text: reply
@@ -251,9 +251,9 @@ bot.addFunctionality((event) => event.command?.name === 'jadwalkuliah', async (e
 
 // Add schedulescraper batch command.
 bot.addFunctionality((event) => event.command?.name === 'add-jadwalkuliah', async (event) => {
-  let items = JSON.parse(command.body);
+  let items = JSON.parse(event.command.body);
 
-  reply = await schedulescraperUseCase.addProfile(event.source.groupId, items);
+  let reply = await schedulescraperUseCase.addProfile(event.source.groupId, items);
   await lineClient.replyMessage(event.replyToken, {
     type: 'text',
     text: reply
@@ -264,7 +264,7 @@ bot.addFunctionality((event) => event.command?.name === 'add-jadwalkuliah', asyn
 bot.addFunctionality((event) => event.command?.name === 'remove-jadwalkuliah', async (event) => {
   let name = event.command.args.join(" ");
 
-  reply = await schedulescraperUseCase.removeProfile(event.source.groupId, name);
+  let reply = await schedulescraperUseCase.removeProfile(event.source.groupId, name);
   await lineClient.replyMessage(event.replyToken, {
     type: 'text',
     text: reply

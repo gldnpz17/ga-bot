@@ -18,7 +18,7 @@ const getSchedule = async () => {
 };
 
 const getScheduleProfile = async (groupChatId) => {
-  let scheduleProfile = await Models.ScheduleProfile.findOne({ groupChatId: groupId }).exec();
+  let scheduleProfile = await Models.ScheduleProfile.findOne({ groupChatId: groupChatId }).exec();
   if (scheduleProfile == null) {
     // If no existing schedule profile, create one.
     let newScheduleProfile = new Models.ScheduleProfile({
@@ -42,7 +42,7 @@ const printMatkul = (entry) => {
          + `Matakuliah: ${entry["Matakuliah"]}\n`
          + `Kelas: ${entry["Kelas"]} (${entry["Hari/Jam"]})\n`
          + `Dosen: ${entry["Dosen"]}\n`
-         + `URL:\n${entry["URL"].join('\n ')}\n`;
+         + `URL:\n${entry["URL"].join('\n - ')}\n`;
   return result;
 };
 
@@ -56,13 +56,13 @@ const filterByName = async (name, schedules) => {
 };
 
 const filterByProfile = async (groupId, profileName, schedules) => {
-  let profile = await getScheduleProfile(groupId).profiles?.find(entry => entry.name === profileName);
+  let profile = await getScheduleProfile(groupId).profiles?.find(entry => entry?.name === profileName);
   let result = '';
 
   if (profile?.matkul?.length > 0) {
     let added_entries = [];
     for (let i = 0;i<profile.matkul.length;i++){
-      schedules.filter(entry => new RegExp(profile.matkul[i], 'i').test(entry)).forEach((entry) => {
+      schedules.filter(entry => new RegExp(profile.matkul[i], 'i').test(entry['Matakuliah'])).forEach((entry) => {
         if(!added_entries.includes(entry['#'])){
           added_entries.push(entry['#']);
           result += printMatkul(entry);
@@ -79,14 +79,21 @@ module.exports.search = async (groupId, profileName) => {
   if (schedules == null){
     throw new ApplicationError("Error fetching schedules.");
   }
-  let foo = "foo";
-  let result = filterByName(profileName, schedules) || filterByProfile(groupId, profileName, schedules);
+  
+  try {
+    let result = await filterByName(profileName, schedules);
+    if (result == null) {
+      result = await filterByProfile(groupId, profileName, schedules);
+    }
 
-  if (result) {
-    return foo + result;
-  }
-  else {
-    return foo + `No result for ${profileName.toString()}.`
+    if (result != null) {
+      return result;
+    }
+    else {
+      return `No result for ${profileName.toString()}.`;
+    }
+  } catch (err) {
+    return `Error: ${err}`;
   }
 };
 
@@ -111,7 +118,7 @@ module.exports.addProfile = async (groupId, profileItems) => {
   profile.profiles.push(profileItems);
   await profile.save();
 
-  status += `Added profiles. profiles: ${profileItems}`;
+  status += `Added profiles. profile name: ${profileItems.name}`;
   return status;
 };
 
@@ -119,7 +126,7 @@ module.exports.removeProfile = async (groupId, profileName) => {
   let profile = await getScheduleProfile(groupId);
   let status = '';
 
-  let index = profile.findIndex(profile => profile.name === profileName);
+  let index = profile.profiles.findIndex(profile => profile.name === profileName);
   if (index !== -1) {
     profile.profiles.splice(index, 1);
     await profile.save();
