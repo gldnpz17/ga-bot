@@ -209,8 +209,11 @@ bot.addFunctionality((event) => event.type === 'unsend', async (event) => {
 // Show unsent messages
 bot.addFunctionality((event) => event.command?.name === 'ununsend', async (event) => {
   let amount = event.command.args[0];
+
+  let queryStartTime = performance.now()
   let messages = await configureUnunsendUseCase.dumpUnunsend(event.source.groupId, Number.parseInt(amount));
-  
+  let queryEndTime = performance.now()
+
   let reply = '';
   messages.forEach(message => {
     let date = new Date(message.timestamp + 7*3600*1000).toUTCString();
@@ -220,6 +223,8 @@ bot.addFunctionality((event) => event.command?.name === 'ununsend', async (event
   if (reply === '') {
     reply = 'No unsent messages to show.';
   }
+
+  reply += `\nQuery completed in ${queryEndTime - queryStartTime} ms.`;
   
   await lineClient.replyMessage(event.replyToken, {
     type: 'text',
