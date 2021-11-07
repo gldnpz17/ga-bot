@@ -3,28 +3,6 @@ const Models = require('../models/models');
 const axios = require('axios').default;
 const config = require('../config');
 
-const ONE_HOUR = 3600 * 1000;
-
-const getGroupChatMessageHistory = async (groupChatId) => {
-  let messageHistory = await Models.GroupChatMessageHistory.findOne({ groupChatId: groupChatId }).exec();
-  if (messageHistory === null || messageHistory == undefined) {
-    // If no existing message history, create one.
-    let newMessageHistory = new Models.GroupChatMessageHistory({
-      groupChatId: groupChatId,
-      messages: [],
-      unsentMessages: []
-    });
-
-    newMessageHistory.save((err, doc) => {
-      console.log(`Initialized new message history. doc: ${doc}`);
-    });
-    
-    messageHistory = newMessageHistory
-  }
-
-  return messageHistory;
-};
-
 const getUsername = async (groupId, userId) => {
   try {
     let response = await axios.get(`https://api.line.me/v2/bot/group/${groupId}/member/${userId}`, {
@@ -50,7 +28,9 @@ const sortByTimestamp = (first, second) => {
 }
 
 module.exports.dumpUnunsend = async (groupChatId, amount) => {
-  let messageHistory = await getGroupChatMessageHistory(groupChatId);
+  throw new ApplicationError('Feature is a work in progress.');
+
+  /*let messageHistory = await getGroupChatMessageHistory(groupChatId);
   let unsentMessages = messageHistory.unsentMessages;
   
   if (amount > 0 && amount < unsentMessages.length) {
@@ -63,31 +43,25 @@ module.exports.dumpUnunsend = async (groupChatId, amount) => {
     message.username = await getUsername(groupChatId, message.userId);    
   }
   
-  return unsentMessages;
+  return unsentMessages;*/
 };
 
 module.exports.pushUnunsend = async (groupChatId, messageId) => {
-  let messageHistory = await getGroupChatMessageHistory(groupChatId);
-  
-  let unsentMessage = messageHistory.messages.find(message => message.id === messageId);
-  if (unsentMessage === null || unsentMessage === undefined) {
-    throw new ApplicationError(`Cannot find a message with the id ${messageId}.`);
+  let unsentMessage = await Models.MessageHistory.findOne({
+    messageId: messageId
+  }).exec();
+
+  if (!unsentMessage) {
+    console.log(`Can't find message to mark as unsent.`);
   }
-  
-  messageHistory.unsentMessages.push(unsentMessage);
-  messageHistory.unsentMessages.sort(sortByTimestamp);
-  
-  // delete excess unsent messages
-  let maxMessageCount = 100;
-  while (messageHistory.unsentMessages.length > maxMessageCount) {
-    messageHistory.unsentMessages.shift();
-  }
-  
-  await messageHistory.save();
+
+  unsentMessage.unsent = true
+  await unsentMessage.save()
 };
 
 module.exports.popUnunsend = async (groupChatId, amount, initiatorId) => {
-  let messageHistory = await getGroupChatMessageHistory(groupChatId);
+  throw new ApplicationError('Feature is a work in progress.')
+  /*let messageHistory = await getGroupChatMessageHistory(groupChatId);
   
   let unsentMessages = messageHistory.unsentMessages;
   const maxUnsentAmount = unsentMessages.length;
@@ -112,25 +86,18 @@ module.exports.popUnunsend = async (groupChatId, amount, initiatorId) => {
   messageHistory.unsentMessages = remainingMessages;
   await messageHistory.save();
   
-  return { count: successCount, notes: notes };
+  return { count: successCount, notes: notes };*/
 };
 
 module.exports.logMessage = async (timestamp, source, message) => {
-  let messageHistory = await getGroupChatMessageHistory(source.groupId);
-  
-  messageHistory.messages.push({
-    id: message.id,
+  let loggedMessage = new Models.MessageHistory({
+    groupChatId: source.groupId,
+    messageId: message.id,
     timestamp: timestamp,
     userId: source.userId,
-    text: message.text
+    text: message.text,
+    unsent: false
   });
-  
-  // delete older messages
-  let timeout = ONE_HOUR;
-  let maxMessageCount = 100;
-  while (Date.now()-messageHistory.messages[0].timestamp > timeout && messageHistory.messages.length > maxMessageCount) {
-    messageHistory.messages.shift();
-  }
-  
-  await messageHistory.save();
+
+  await loggedMessage.save()
 };

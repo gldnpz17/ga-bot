@@ -46,6 +46,21 @@ const groupChatMessageHistorySchema = new mongoose.Schema({
   }]
 });
 
+const messageHistorySchema = new mongoose.Schema({
+  groupChatId: String,
+  messageId: String,
+  timestamp: Number,
+  userId: String,
+  text: String,
+  unsent: Boolean
+});
+
+messageHistorySchema.index({
+  groupChatId: 1,
+  messageId: 1,
+  unsent: 1
+});
+
 const authSessionSchema = new mongoose.Schema({
   token: String,
   groupChatId: String
@@ -83,3 +98,4 @@ module.exports.AuthSession = mongoose.model('AuthSession', authSessionSchema);
 module.exports.FileArchive = mongoose.model('FileArchive', fileArchiveSchema);
 module.exports.Jadwalkuliah = mongoose.model('Schedule', scheduleSchema);
 module.exports.JadwalkuliahProfile = mongoose.model('ScheduleProfile', scheduleProfileSchema);
+module.exports.MessageHistory = mongoose.model('MessageHistory', messageHistorySchema);
