@@ -28,22 +28,40 @@ const sortByTimestamp = (first, second) => {
 }
 
 module.exports.dumpUnunsend = async (groupChatId, amount) => {
-  throw new ApplicationError('Feature is a work in progress.');
+  // Fetch unsent messages.
+  let messages = await Models.MessageHistory
+    .aggregate([
+      {
+        '$match': {
+          'groupChatId': groupChatId, 
+          'unsent': true
+        }
+      }, {
+        '$sort': {
+          'timestamp': -1
+        }
+      }, {
+        '$unset': [
+          'groupChatId', 'messageId', '_id', '__v', 'unsent'
+        ]
+      }
+    ])
+    .limit(amount)
+    .exec()
 
-  /*let messageHistory = await getGroupChatMessageHistory(groupChatId);
-  let unsentMessages = messageHistory.unsentMessages;
-  
-  if (amount > 0 && amount < unsentMessages.length) {
-    unsentMessages = unsentMessages.slice(-amount);
+  if (!messages) {
+    throw new ApplicationError('No unsent messages to show.')
   }
 
+  messages.reverse()
+    
   // Get username.
-  for (let index = 0; index < unsentMessages.length; index++) {
-    let message = unsentMessages[index];
+  for (let index = 0; index < messages.length; index++) {
+    let message = messages[index];
     message.username = await getUsername(groupChatId, message.userId);    
   }
-  
-  return unsentMessages;*/
+
+  return messages;
 };
 
 module.exports.pushUnunsend = async (groupChatId, messageId) => {
