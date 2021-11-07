@@ -17,16 +17,6 @@ const getUsername = async (groupId, userId) => {
   }
 }
 
-const sortByTimestamp = (first, second) => {
-  if (first.timestamp < second.timestamp) {
-    return -1;
-  } else if (first.timestamp > second.timestamp) {
-    return 1;
-  } else {
-    return 0;
-  }
-}
-
 module.exports.dumpUnunsend = async (groupChatId, amount) => {
   // Fetch unsent messages.
   let query = Models.MessageHistory
@@ -60,9 +50,15 @@ module.exports.dumpUnunsend = async (groupChatId, amount) => {
   messages.reverse()
     
   // Get username.
+  let usernameCache = {}
   for (let index = 0; index < messages.length; index++) {
     let message = messages[index];
-    message.username = await getUsername(groupChatId, message.userId);    
+    
+    if (!usernameCache[message.userId]) {
+      usernameCache[message.userId] = await getUsername(groupChatId, message.userId);
+    }
+
+    message.username = usernameCache[message.userId];
   }
 
   return messages;
