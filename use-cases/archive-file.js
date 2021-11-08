@@ -70,7 +70,19 @@ module.exports.archiveFile = async (groupChatId, messageId, timestamp, originalF
 
 module.exports.calculateUsage = async (groupChatId) => {
   let files = await measurePerformanceAsync("FetchFileArchiveFromDB", async () => {
-    return await Models.FileArchive.find({ groupChatId: groupChatId }).exec();
+    return await Models.FileArchive.aggregate(
+      [
+        {
+          '$match': {
+            'groupChatId': groupChatId
+          }
+        }, {
+          '$unset': [
+            '_id', '__v', 'timestamp', 'groupChatId', 'originalFilename'
+          ]
+        }
+      ]
+    ).exec();
   })
 
   let totalSize = 0;
