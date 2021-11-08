@@ -7,6 +7,7 @@ var path = require('path');
 const fs = require('fs');
 const util = require('util');
 const generateRandomToken = require('../utilities/generate-random-token');
+const { measurePerformanceAsync } = require('../common/measure-performance');
 
 const finished = util.promisify(stream.finished);
 
@@ -68,13 +69,17 @@ module.exports.archiveFile = async (groupChatId, messageId, timestamp, originalF
 }
 
 module.exports.calculateUsage = async (groupChatId) => {
-  let files = await Models.FileArchive.find({ groupChatId: groupChatId }).exec();
+  let files = await measurePerformanceAsync("FetchFileArchiveFromDB", async () => {
+    return await Models.FileArchive.find({ groupChatId: groupChatId }).exec();
+  })
 
   let totalSize = 0;
   let fileCount = files.length;
-  for (let x = 0; x < files.length; x++) {
-    totalSize += await getFileSize(files[x].fileId);
-  }
+  await measurePerformanceAsync("CalculateTotalSize", async () => {
+    for (let x = 0; x < files.length; x++) {
+      totalSize += await getFileSize(files[x].fileId);
+    }
+  })
 
   return ({
     totalSize: Math.round(totalSize / (1024 * 1024)),
