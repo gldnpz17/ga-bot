@@ -1,4 +1,4 @@
-const measurePerformanceAsync = (label, asyncCode) => {
+const measurePerformanceAsync = async (label, asyncCode) => {
   let beforeTime = performance.now();
   let result = await asyncCode();
   let afterTime = performance.now();
