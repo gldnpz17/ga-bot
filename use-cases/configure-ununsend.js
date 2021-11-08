@@ -2,6 +2,7 @@ const ApplicationError = require('../common/application-error');
 const Models = require('../models/models');
 const axios = require('axios').default;
 const config = require('../config');
+const { measurePerformanceAsync } = require('../common/measure-performance');
 
 const getUsername = async (groupId, userId) => {
   try {
@@ -19,29 +20,31 @@ const getUsername = async (groupId, userId) => {
 
 module.exports.dumpUnunsend = async (groupChatId, amount) => {
   // Fetch unsent messages.
-  let query = Models.MessageHistory
-    .aggregate([
-      {
-        '$match': {
-          'groupChatId': groupChatId, 
-          'unsent': true
+  let messages = await measurePerformanceAsync('QueryMessageHistory', () => {
+    let query = Models.MessageHistory
+      .aggregate([
+        {
+          '$match': {
+            'groupChatId': groupChatId, 
+            'unsent': true
+          }
+        }, {
+          '$sort': {
+            'timestamp': -1
+          }
+        }, {
+          '$unset': [
+            'groupChatId', 'messageId', '_id', '__v', 'unsent'
+          ]
         }
-      }, {
-        '$sort': {
-          'timestamp': -1
-        }
-      }, {
-        '$unset': [
-          'groupChatId', 'messageId', '_id', '__v', 'unsent'
-        ]
-      }
-    ])
-  
-  if (amount) {
-    query.limit(amount);
-  }
+      ])
+    
+    if (amount) {
+      query.limit(amount);
+    }
 
-  let messages = await query.exec();
+    return await query.exec();
+  })
 
   if (!messages) {
     throw new ApplicationError('No unsent messages to show.')
@@ -50,16 +53,18 @@ module.exports.dumpUnunsend = async (groupChatId, amount) => {
   messages.reverse()
     
   // Get username.
-  let usernameCache = {}
-  for (let index = 0; index < messages.length; index++) {
-    let message = messages[index];
-    
-    if (!usernameCache[message.userId]) {
-      usernameCache[message.userId] = await getUsername(groupChatId, message.userId);
+  await measurePerformanceAsync('FetchUsernames', () => {
+    let usernameCache = {}
+    for (let index = 0; index < messages.length; index++) {
+      let message = messages[index];
+      
+      if (!usernameCache[message.userId]) {
+        usernameCache[message.userId] = await getUsername(groupChatId, message.userId);
+      }
+  
+      message.username = usernameCache[message.userId];
     }
-
-    message.username = usernameCache[message.userId];
-  }
+  })
 
   return messages;
 };
