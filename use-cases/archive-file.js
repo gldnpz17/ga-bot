@@ -7,7 +7,7 @@ var path = require('path');
 const fs = require('fs');
 const util = require('util');
 const generateRandomToken = require('../utilities/generate-random-token');
-const { measurePerformanceAsync } = require('../common/measure-performance');
+const { logPerformanceAsync } = require('../common/measure-performance');
 
 const finished = util.promisify(stream.finished);
 
@@ -69,7 +69,7 @@ module.exports.archiveFile = async (groupChatId, messageId, timestamp, originalF
 }
 
 module.exports.calculateUsage = async (groupChatId) => {
-  let files = await measurePerformanceAsync("FetchFileArchiveFromDB", async () => {
+  let files = await logPerformanceAsync("FetchFileArchiveFromDB", async () => {
     return await Models.FileArchive.aggregate(
       [
         {
@@ -85,7 +85,7 @@ module.exports.calculateUsage = async (groupChatId) => {
     ).exec();
   })
 
-  let totalSize = await measurePerformanceAsync("CalculateTotalSize", async () => {
+  let totalSize = await logPerformanceAsync("CalculateTotalSize", async () => {
     let promises = []
     files.forEach(file => {
       promises.push(getFileSize(file.fileId))

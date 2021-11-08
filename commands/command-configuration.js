@@ -13,6 +13,8 @@ const getCounterDataUseCase = require('../use-cases/get-counter-data');
 const configureUnunsendUseCase = require('../use-cases/configure-ununsend');
 const schedulescraperUseCase = require('../use-cases/schedule-scraper');
 
+const { measurePerformanceAsync } = require('../common/measure-performance');
+
 const line = require('@line/bot-sdk');
 const { archiveFile, calculateUsage } = require('../use-cases/archive-file');
 const authenticationUseCase = require('../use-cases/authentication');
@@ -299,11 +301,11 @@ bot.addFunctionality(event => event.command?.name === 'revoke-auth-sessions', as
 
 // Get archive size.
 bot.addFunctionality(event => event.type === 'message' && event.command?.name === 'check-storage-use', async (event) => {
-  let data = await calculateUsage(event.source.groupId);
+  let { result, timeMillis } = await measurePerformanceAsync(async () => await calculateUsage(event.source.groupId));
 
   await lineClient.replyMessage(event.replyToken, {
     type: 'text',
-    text: `File archive storage use: ${data.totalSize} MB (${data.fileCount} file(s)).`
+    text: `File archive storage use: ${result.totalSize} MB (${result.fileCount} file(s)).\nCalculation time: ${timeMillis} ms.`
   });
 });
 

@@ -2,7 +2,7 @@ const ApplicationError = require('../common/application-error');
 const Models = require('../models/models');
 const axios = require('axios').default;
 const config = require('../config');
-const { measurePerformanceAsync } = require('../common/measure-performance');
+const { logPerformanceAsync } = require('../common/measure-performance');
 
 const getUsername = async (groupId, userId) => {
   try {
@@ -20,7 +20,7 @@ const getUsername = async (groupId, userId) => {
 
 module.exports.dumpUnunsend = async (groupChatId, amount) => {
   // Fetch unsent messages.
-  let messages = await measurePerformanceAsync('QueryMessageHistory', async () => {
+  let messages = await logPerformanceAsync('QueryMessageHistory', async () => {
     let query = Models.MessageHistory
       .aggregate([
         {
@@ -53,7 +53,7 @@ module.exports.dumpUnunsend = async (groupChatId, amount) => {
   messages.reverse()
     
   // Get username.
-  await measurePerformanceAsync('FetchUsernames', async () => {
+  await logPerformanceAsync('FetchUsernames', async () => {
     let usernameCache = {}
     for (let index = 0; index < messages.length; index++) {
       let message = messages[index];
