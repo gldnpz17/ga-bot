@@ -85,16 +85,19 @@ module.exports.calculateUsage = async (groupChatId) => {
     ).exec();
   })
 
-  let totalSize = 0;
-  let fileCount = files.length;
-  await measurePerformanceAsync("CalculateTotalSize", async () => {
-    for (let x = 0; x < files.length; x++) {
-      totalSize += await getFileSize(files[x].fileId);
-    }
+  let totalSize = await measurePerformanceAsync("CalculateTotalSize", async () => {
+    let promises = []
+    files.forEach(file => {
+      promises.push(getFileSize(file.fileId))
+    });
+
+    let sizes = await Promise.all(promises);
+
+    return sizes.reduce((sum, size) => sum + size, 0);
   })
 
   return ({
     totalSize: Math.round(totalSize / (1024 * 1024)),
-    fileCount: fileCount 
+    fileCount: files.length
   }); 
 }
