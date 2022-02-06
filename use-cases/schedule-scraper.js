@@ -42,13 +42,15 @@ const printMatkul = (entry) => {
          + `Matakuliah: ${entry["Matakuliah"]}\n`
          + `Kelas: ${entry["Kelas"]} (${entry["Hari/Jam"]})\n`
          + `Dosen: ${entry["Dosen"]}\n`
-         + `URL:\n${entry["URL"].join('\n - ')}\n`;
+         + `URL:\n - ${entry["URL"].join('\n - ')}\n`;
   return result;
 };
 
 const filterByName = async (name, schedules) => {
   let result = '';
-  schedules = schedules.filter(entry => new RegExp(name, 'i').test(entry)).forEach((entry) => {
+  let regex = new RegExp(name, 'i');
+  schedules.filter(entry => regex.test(entry))
+  .forEach((entry) => {
     result += printMatkul(entry);
   });
 
@@ -61,9 +63,11 @@ const filterByProfile = async (groupId, profileName, schedules) => {
 
   if (profile?.matkul?.length > 0) {
     let added_entries = [];
-    for (let i = 0;i<profile.matkul.length;i++){
-      schedules.filter(entry => new RegExp(profile.matkul[i], 'i').test(entry['Matakuliah'])).forEach((entry) => {
-        if(!added_entries.includes(entry['#'])){
+    for (let i = 0; i < profile.matkul.length; i++) {
+      let regex = new RegExp(profile.matkul[i], 'i');
+      schedules.filter(entry => regex.test(entry['Matakuliah']))
+      .forEach((entry) => {
+        if(!added_entries.includes(entry['#'])) {
           added_entries.push(entry['#']);
           result += printMatkul(entry);
         }
