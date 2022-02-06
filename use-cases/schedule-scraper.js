@@ -57,8 +57,7 @@ const filterByName = async (name, schedules) => {
   return (result !== '') ? result : null;
 };
 
-const filterByProfile = async (groupId, profileName, schedules) => {
-  let profile = await getScheduleProfile(groupId).profiles?.find(entry => entry?.name === profileName);
+const filterByProfile = async (profile, schedules) => {
   let result = '';
 
   if (profile?.matkul?.length > 0) {
@@ -87,7 +86,9 @@ module.exports.search = async (groupId, profileName) => {
   try {
     let result = await filterByName(profileName, schedules);
     if (result == null) {
-      result = await filterByProfile(groupId, profileName, schedules);
+      let scheduleProfile = await getScheduleProfile(groupId);
+      let profile = scheduleProfile.profiles?.find(entry => entry?.name === profileName);
+      result = await filterByProfile(profile, schedules);
     }
 
     if (result != null) {
