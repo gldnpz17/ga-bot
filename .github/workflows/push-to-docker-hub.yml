@@ -12,17 +12,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-      with:
-        ref: 'production'
-
-    - name: Build the Docker image
-      run: docker build --file "Dockerfile" --tag "gldnpz/ga-bot:latest" .
-    
-    - name: Login to Docker Hub
-      env: 
-        ACCESS_TOKEN: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-      run: docker login --username gldnpz --password $ACCESS_TOKEN
-    
-    - name: Push to registry
-      run: docker push "gldnpz/ga-bot:latest"
+      -
+        name: Checkout 
+        uses: actions/checkout@v2
+      -
+        name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          builder: ${{ steps.buildx.outputs.name }}
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/ga-bot:latest
+          cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/ga-bot:buildcache
+          cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/ga-bot:buildcache,mode=max
+          
