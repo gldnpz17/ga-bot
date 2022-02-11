@@ -87,7 +87,7 @@ module.exports.search = async (groupId, keywords) => {
     }
   }).lean().exec()
 
-  if (!schedules) return `No result for ${keywords}.`
+  if (!schedules || schedules.length <= 0) return `No result for ${keywords}.`
 
   return schedules
     .map(printMatkul)
