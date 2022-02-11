@@ -83,6 +83,13 @@ const scheduleSchema = new mongoose.Schema({
   Keterangan: [String]
 });
 
+scheduleSchema.index({
+  "Hari/Jam": "text",
+  Matakuliah: "text",
+  Kelas: "text",
+  Dosen: "text"
+})
+
 const scheduleProfileSchema = new mongoose.Schema({
   groupChatId: String,
   profiles: [{

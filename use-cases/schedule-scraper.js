@@ -77,13 +77,26 @@ const filterByProfile = async (profile, schedules) => {
   return (result !== '') ? result : null;
 };
 
-module.exports.search = async (groupId, profileName) => {
+module.exports.search = async (groupId, keywords) => {
   let schedules = await getSchedule();
   if (schedules == null){
     throw new ApplicationError("Error fetching schedules.");
   }
   
-  try {
+  const schedules = await Models.Schedule.find({
+    $text: {
+      $search: keywords,
+      $caseSensitive: false
+    }
+  }).lean().exec()
+
+  if (!schedules) return `No result for ${keywords}.`
+
+  const result = schedules
+    .map(printMatkul)
+    .join("\n==========================\n")
+
+  /*try {
     let result = await filterByName(profileName, schedules);
     if (result == null) {
       let scheduleProfile = await getScheduleProfile(groupId);
@@ -95,11 +108,11 @@ module.exports.search = async (groupId, profileName) => {
       return result;
     }
     else {
-      return `No result for ${profileName.toString()}.`;
+      return ;
     }
   } catch (err) {
     return `Error: ${err}`;
-  }
+  }*/
 };
 
 module.exports.addProfile = async (groupId, profileItems) => {
