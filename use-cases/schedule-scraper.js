@@ -78,10 +78,10 @@ const filterByProfile = async (profile, schedules) => {
 };
 
 module.exports.search = async (groupId, keywords) => {
-  let schedules = await getSchedule();
+  /*let schedules = await getSchedule();
   if (schedules == null){
     throw new ApplicationError("Error fetching schedules.");
-  }
+  }*/
   
   const schedules = await Models.Schedule.find({
     $text: {
