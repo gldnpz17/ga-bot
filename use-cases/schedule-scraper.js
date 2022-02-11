@@ -36,15 +36,12 @@ const getScheduleProfile = async (groupChatId) => {
   return scheduleProfile;
 };
 
-const printMatkul = (entry) => {
-  let result = '';
-  result += `===================================\n`
-         + `Matakuliah: ${entry["Matakuliah"]}\n`
-         + `Kelas: ${entry["Kelas"]} (${entry["Hari/Jam"]})\n`
-         + `Dosen: ${entry["Dosen"]}\n`
-         + `URL:\n - ${entry["URL"].join('\n - ')}\n`;
-  return result;
-};
+const printMatkul = (entry) => (
+`Matakuliah: ${entry["Matakuliah"]}
+Kelas: ${entry["Kelas"]} (${entry["Hari/Jam"]})
+Dosen: ${entry["Dosen"]}
+URL:\n - ${entry["URL"].join('\n - ')}`
+);
 
 const filterByName = async (name, schedules) => {
   let result = '';
@@ -94,7 +91,7 @@ module.exports.search = async (groupId, keywords) => {
 
   return schedules
     .map(printMatkul)
-    .join("\n==========================\n")
+    .join("\n===================================\n")
 
   /*try {
     let result = await filterByName(profileName, schedules);
