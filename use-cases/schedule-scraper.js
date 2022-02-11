@@ -92,7 +92,7 @@ module.exports.search = async (groupId, keywords) => {
 
   if (!schedules) return `No result for ${keywords}.`
 
-  const result = schedules
+  return schedules
     .map(printMatkul)
     .join("\n==========================\n")
 
