@@ -246,7 +246,7 @@ bot.addFunctionality((event) => event.command?.name === 'unununsend', async (eve
 });
 
 // Get schedulescraper by name.
-bot.addFunctionality((event) => event.command?.name === 'jadwalkuliah', async (event) => {
+bot.addFunctionality((event) => event.command?.name === 'jadwalkuliah' || event.command?.name === "jk", async (event) => {
   let name = event.command.args?.join(" ");
 
   let reply = await schedulescraperUseCase.search(event.source.groupId, name);
