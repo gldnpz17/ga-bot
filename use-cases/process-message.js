@@ -20,9 +20,17 @@ module.exports.replyToMessage = async (groupChatId, message) => {
     let configIndex = chatConfig.configs.findIndex(config => stringToRegex(config.regex).test(message));
     
     if (configIndex !== -1) {
-      console.log(`Replied to \'${message}\' with \'${chatConfig.configs[configIndex].reply}\'.`);
+      const matches = message.match(stringToRegex(chatConfig.configs[configIndex].regex));
+      let replacedReply = chatConfig.configs[configIndex].reply;
 
-      return chatConfig.configs[configIndex].reply;
+      // A naive method?
+      for (let matchIndex = 1; matchIndex < matches.length; ++matchIndex) {
+          replacedReply = replacedReply.replaceAll(`$${matchIndex}`, matches[matchIndex]);
+      }
+
+      console.log(`Replied to \'${message}\' with \'${replacedReply}\'.`);
+
+      return replacedReply;
     } else {
       return null;
     }
