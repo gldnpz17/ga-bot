@@ -338,7 +338,7 @@ bot.addFunctionality(event => event.type === 'message' && ['image', 'video', 'au
       body: {
         type: 'box',
         layout: 'horizontal',
-        paddingAll: 'xs',
+        paddingAll: 'sm',
         contents: [
           {
             type: 'text',
