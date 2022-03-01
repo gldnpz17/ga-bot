@@ -331,17 +331,22 @@ bot.addFunctionality(event => event.type === 'message' && ['image', 'video', 'au
   
   await lineClient.replyMessage(event.replyToken, {
     type: 'flex',
-    altText: 'Click here to see archived media',
+    altText: 'Open to see archived media',
     contents: {
       type: 'bubble',
       size: 'nano',
       body: {
         type: 'box',
         layout: 'horizontal',
+        paddingAll: 'xs',
         contents: [
           {
             type: 'text',
             text: 'Archived →',
+            align: 'center',
+            size: 'xxs',
+            color: '#1976D2',
+            weight: 'bold',
             action: {
               type: 'uri',
               label: 'Archive URL',
