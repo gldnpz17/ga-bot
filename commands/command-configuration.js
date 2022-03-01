@@ -334,6 +334,7 @@ bot.addFunctionality(event => event.type === 'message' && ['image', 'video', 'au
     altText: 'Click here to see archived media',
     contents: {
       type: 'bubble',
+      size: 'nano',
       body: {
         type: 'box',
         layout: 'horizontal',
