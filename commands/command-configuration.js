@@ -330,8 +330,26 @@ bot.addFunctionality(event => event.type === 'message' && ['image', 'video', 'au
   let fileId = await archiveFile(event.source.groupId, event.message.id, event.timestamp, event.message?.fileName);
   
   await lineClient.replyMessage(event.replyToken, {
-    type: 'text',
-    text: `Archive URL: https://${config.serverDomainName}/archive/${fileId}`
+    type: 'flex',
+    altText: 'Click here to see archived media',
+    contents: {
+      type: 'bubble',
+      body: {
+        type: 'box',
+        layout: 'horizontal',
+        contents: [
+          {
+            type: 'text',
+            text: 'Archived →',
+            action: {
+              type: 'uri',
+              label: 'Archive URL',
+              uri: `https://${config.serverDomainName}/archive/${fileId}`
+            }
+          }
+        ]
+      }
+    }
   });
 });
 
