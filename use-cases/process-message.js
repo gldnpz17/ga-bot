@@ -29,8 +29,8 @@ module.exports.replyToMessage = async (groupChatId, message) => {
       }
 
       // Pick up detected emoji IDs from the reply template
-      const emojiRegex = /\$emoji\(([a-z\d]+)\/(\d+)\)/i;
-      const emojisData = reply.matchAll(new RegExp(emojiRegex, emojiRegex.flags + "g"));
+      const emojiRegex = /\$emoji\(([a-z\d]+)\/(\d+)\)/gi;
+      const emojisData = reply.matchAll(emojiRegex);
       emojis = [...emojisData].map(([, productId, emojiId], index) => ({ index, productId, emojiId }));
 
       // Strip all references to the emoji IDs on the actual reply, and leave just a single placeholder for each emojis
