@@ -371,9 +371,10 @@ bot.addFunctionality((event) => event.type === 'message' && event.message.type =
     
     await lineClient.replyMessage(event.replyToken, {
       type: 'text',
-      ...(reply.emojis && reply.text ? reply : {
-        text: reply
-      })
+//       ...(reply.emojis && reply.text ? reply : {
+//         text: reply
+//       })
+      text: JSON.stringify(reply) // FOR DEBUGGING PURPOSES ONLY
     });
   }
 });
