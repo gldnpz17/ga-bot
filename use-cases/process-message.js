@@ -29,7 +29,7 @@ module.exports.replyToMessage = async (groupChatId, message) => {
       }
 
       // Pick up detected emoji IDs from the reply template
-      const emojiRegex = /\$emoji\((\d+)\/(\d+)\)/i;
+      const emojiRegex = /\$emoji\(([a-z\d]+)\/(\d+)\)/i;
       const emojisData = reply.matchAll(new RegExp(emojiRegex, emojiRegex.flags + "g"));
       emojis = [...emojisData].map(([, productId, emojiId], index) => ({ index, productId, emojiId }));
 
