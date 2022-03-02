@@ -363,15 +363,17 @@ bot.addFunctionality(event => event.type === 'message' && ['image', 'video', 'au
 bot.addFunctionality((event) => event.type === 'message' && event.message.type === 'text', async (event) => {
   await configureUnunsendUseCase.logMessage(event.timestamp, event.source, event.message);
   
-  let reply = await processMessageUseCase.replyToMessage(event.source.groupId, event.message.text);
+  const reply = await processMessageUseCase.replyToMessage(event.source.groupId, event.message.text);
 
-  console.log(`Received reply: ${reply}. Sending...`);
+  console.log(`Received reply: ${reply.text ?? reply}. Sending...`);
   if (reply !== null) {
-    console.log(`Replying to message. replyToken: ${event.replyToken}. reply: ${reply}`);
+    console.log(`Replying to message. replyToken: ${event.replyToken}. reply: ${reply.text ?? reply}`);
     
     await lineClient.replyMessage(event.replyToken, {
       type: 'text',
-      text: reply
+      ...(reply.emojis && reply.text ? reply : {
+        text: reply
+      })
     });
   }
 });
