@@ -6,15 +6,15 @@ module.exports.replyToMessage = async (groupChatId, message) => {
   if (chatConfig.configs.length !== 0) {
     const stringToRegex = (input) => {
       // Parse input
-      var m = input.match(/(\/?)(.+)\1([a-z]*)/i);
+      var [,, pattern, flags] = input.match(/(\/?)(.+)\1([a-z]*)/i);
 
       // Invalid flags
-      if (m[3] && !/^(?!.*?(.).*?\1)[gmixXsuUAJ]+$/.test(m[3])) {
+      if (flags && !/^(?!.*?(.).*?\1)[gmixXsuUAJ]+$/.test(flags)) {
         return RegExp(input);
       }
 
       // Create the regular expression
-      return new RegExp(m[2], m[3]);
+      return new RegExp(pattern, flags);
     };
 
     let configIndex = chatConfig.configs.findIndex(config => stringToRegex(config.regex).test(message));
