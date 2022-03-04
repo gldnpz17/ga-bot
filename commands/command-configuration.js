@@ -361,6 +361,8 @@ bot.addFunctionality(event => event.type === 'message' && ['image', 'video', 'au
 
 // Reply to messages.
 bot.addFunctionality((event) => event.type === 'message' && event.message.type === 'text', async (event) => {  
+  await configureUnunsendUseCase.logMessage(event.timestamp, event.source, event.message);
+
   const reply = await processMessageUseCase.replyToMessage(event.source.groupId, event.message.text);
 
   console.log(`Received reply: ${reply.text ?? reply}. Sending...`);
