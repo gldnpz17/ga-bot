@@ -12,7 +12,7 @@ module.exports.BotCommand = class CommandPipeline {
       action: async (event, ...args) => {
         // Implement ununsend logging in all commands instead
         // by wrapping each action functions
-        const { type, message, timestamp, source, message } = event;
+        const { type, message, timestamp, source } = event;
         if (type === 'message' && message.type === 'text') {
           await logMessage(timestamp, source, message);
         }
