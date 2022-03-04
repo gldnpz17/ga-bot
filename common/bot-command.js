@@ -1,3 +1,5 @@
+const { logMessage } = require('../use-cases/configure-ununsend');
+
 module.exports.BotCommand = class CommandPipeline {
   pipelineItems = [];
   errorHandler = async (event, err) => {
@@ -6,8 +8,17 @@ module.exports.BotCommand = class CommandPipeline {
   
   addFunctionality(condition, action) {
     this.pipelineItems.push({
-      condition: condition,
-      action: action
+      condition,
+      action: async (...args) => {
+        // Implement ununsend logging in all commands instead
+        // by wrapping each action functions
+        const { type, message, timestamp, source, message } = event;
+        if (type === 'message' && message.type === 'text') {
+          await logMessage(timestamp, source, message);
+        }
+
+        await action(event, ...args);
+      }
     });
   }
 
@@ -16,12 +27,10 @@ module.exports.BotCommand = class CommandPipeline {
       try {
         if(this.pipelineItems[x].condition(event)) {
           await this.pipelineItems[x].action(event);
-  
           break;
         }
       } catch(err) {
         await this.errorHandler(event, err);
-
         break;
       }
     }
