@@ -51,15 +51,8 @@ app.use((err, req, res, next) => {
   console.log(JSON.stringify(err.stack));
 });
 
-const server = app.listen(config.port, () => {
+app.listen(config.port, () => {
   console.log(`Server started on port ${config.port}`);
 });
 
 module.exports = app;
-
-// Immediately exit if running in a testing environment (HACK?)
-if (process.env.NODE_ENV === 'errorcheck') {
-  server.close(() => {
-    process.exit(0);
-  });
-}

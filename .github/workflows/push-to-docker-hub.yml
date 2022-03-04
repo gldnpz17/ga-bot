@@ -7,29 +7,7 @@ on:
 
 jobs:
 
-  check:
-
-    runs-on: ubuntu-latest
-
-    steps:
-      -
-        name: Checkout 
-        uses: actions/checkout@v2
-
-      - 
-        name: Setup Node.js environment for testing
-        uses: actions/setup-node@v3.0.0
-      
-      # Replicate the steps in the Dockerfile (FIXME?)
-      - 
-        run: npm install --production
-
-      - 
-        run: node app.js
-        env:
-          NODE_ENV: errorcheck
-
-  deploy:
+  build:
 
     runs-on: ubuntu-latest
 
