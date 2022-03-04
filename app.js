@@ -10,15 +10,15 @@ mongoose.connect(config.mongoDbUri, {
 
 const Models = require('./models/models');
 
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
 
-let webhookRouter = require('./routes/webhook');
-let statusRouter = require('./routes/status');
-let apiRouter = require('./routes/api');
-let archiveRouter = require('./routes/archive');
+const webhookRouter = require('./routes/webhook');
+const statusRouter = require('./routes/status');
+const apiRouter = require('./routes/api');
+const archiveRouter = require('./routes/archive');
 const { requestLogger } = require('./middlewares/request-logger');
 
 const configureScheduledTasksUseCase = require('./use-cases/configure-scheduled-tasks');
@@ -30,7 +30,7 @@ mkdirSync(config.fileArchiveDirectory, { recursive: true });
 // Initialize scheduled tasks.
 Models.GroupChatConfig.find({}).exec().then(groupChatConfigs => {
   groupChatConfigs.map(groupChatConfig => {
-    let groupChatId = groupChatConfig.groupChatId;
+    const { groupChatId } = groupChatConfig;
   
     groupChatConfig.configs.map(configItem => {
       configureScheduledTasksUseCase.scheduleMessage(groupChatId, configItem);
@@ -38,7 +38,7 @@ Models.GroupChatConfig.find({}).exec().then(groupChatConfigs => {
   });
 });
 
-var app = express();
+const app = express();
 
 app.use(logger('dev'));
 app.use('/webhook', webhookRouter);
@@ -51,8 +51,15 @@ app.use((err, req, res, next) => {
   console.log(JSON.stringify(err.stack));
 });
 
-app.listen(config.port, () => {
+const server = app.listen(config.port, () => {
   console.log(`Server started on port ${config.port}`);
 });
 
 module.exports = app;
+
+// Immediately exit if running in a testing environment (HACK?)
+if (process.env.NODE_ENV === 'errorcheck') {
+  server.close(() => {
+    process.exit(0);
+  });
+}
