@@ -1,4 +1,4 @@
-const { logMessage } = require('../use-cases/configure-ununsend');
+// const { logMessage } = require('../use-cases/configure-ununsend');
 
 module.exports.BotCommand = class CommandPipeline {
   pipelineItems = [];
