@@ -16,6 +16,8 @@ const schedulescraperUseCase = require('../use-cases/schedule-scraper');
 const { measurePerformanceAsync } = require('../common/measure-performance');
 
 const line = require('@line/bot-sdk');
+const axios = require('axios').default;
+
 const { archiveFile, calculateUsage } = require('../use-cases/archive-file');
 const authenticationUseCase = require('../use-cases/authentication');
 const lineConfig = {
@@ -357,6 +359,42 @@ bot.addFunctionality(event => event.type === 'message' && ['image', 'video', 'au
       }
     }
   });
+});
+
+// Send an XKCD image directly from the URL
+bot.addFunctionality(({ command }) => command?.name === 'get-xkcd', async ({ replyToken, command }) => {
+  const [comicNumber] = command.args;
+
+  try {
+    const { data: {
+      img: comicImgUrl,
+      alt: comicAltText
+    }} = await axios.get(`https://xkcd.com/${comicNumber}/info.0.json`);
+
+    await lineClient.replyMessage(replyToken, [
+      {
+        type: 'image',
+        originalContentUrl: comicImgUrl,
+        previewImageUrl: comicImgUrl // Keep it the same since the size is still well below 1 MB
+      },
+      {
+        type: 'text',
+        text: `Alt text: "${comicAltText}"`
+      }
+    ]);
+  }
+  catch (err) {
+    if (!err.response) {
+      throw err;
+    }
+  
+    await lineClient.replyMessage(replyToken, {
+      type: 'text',
+      text: err.response.status === 404
+        ? `XKCD comic #${comicNumber} not found`
+        : `An error occured in obtaining XKCD #${comicNumber}`
+    });
+  }
 });
 
 // Reply to messages.
