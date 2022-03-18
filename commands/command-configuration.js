@@ -280,14 +280,44 @@ bot.addFunctionality((event) => event.command?.name === 'remove-jadwalkuliah', a
   });
 });
 
-// Generate key.
-bot.addFunctionality(event => event.command?.name === 'generate-key', async (event) => {
-  console.log(`Generating key for group : ${event.source.groupId}`);
-  let key = await authenticationUseCase.generateKey(event.source.groupId);
+// Set custom group key
+bot.addFunctionality(({ command }) => command?.name === 'set-group-key', async (event) => {
+  const [newKey] = event.command.args;
+
+  // Validate first (FIXME: This regex is still so small and dumb and wildly incomplete)
+  if (!/^[\w-]{8,64}$/.test(newKey)) {
+    await lineClient.replyMessage(event.replyToken, {
+      type: 'text',
+      text: 'Currently, group key can only contain alphanumeric characters and the "-" symbol. Key must be longer than 8 characters and no more than 64 characters.'
+    });
+    
+    return;
+  }
+
+  await authenticationUseCase.resetKey(event.source.groupId, newKey);
 
   await lineClient.replyMessage(event.replyToken, {
     type: 'text',
-    text: `This key is equivalent to this group chat\'s password. Please keep it safe :)\n\nkey: ${key}`
+    text: 'The key for this group has been reset!'
+  });
+});
+
+// Auto-generate new random group key/password
+bot.addFunctionality(({ command }) => command?.name === 'generate-random-group-key', async (event) => {
+  console.log(`Automatically generating a random new key for group: ${event.source.groupId}`);
+  let key = await authenticationUseCase.resetKey(event.source.groupId);
+
+  await lineClient.replyMessage(event.replyToken, {
+    type: 'text',
+    text: `The key for this group has been reset to a randomly-generated value!\n\nThis key below is equivalent to this group chat\'s password. Please keep it safe :)\nKey: ${key}`
+  });
+});
+
+// Handle the old command calls
+bot.addFunctionality(({ command }) => command?.name === 'generate-key', async ({ replyToken }) => {
+  await lineClient.replyMessage(replyToken, {
+    type: 'text',
+    text: 'The bot now supports setting a custom group key. Please use the new `@gb set-group-key <new-key>` command, or `@gb generate-random-group-key` for the old behavior (randomly-generated group key).'
   });
 });
 

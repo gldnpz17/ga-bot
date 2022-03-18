@@ -4,15 +4,15 @@ const Models = require('../models/models');
 const bcrypt = require('bcrypt');
 const generateRandomToken = require('../utilities/generate-random-token');
 
-module.exports.generateKey = async (groupChatId) => {
+// Still defaults to a randomly-generated key if the `key` param is not supplied
+module.exports.resetKey = async (groupChatId, key = generateRandomToken(64)) => {
   let config = await Models.GroupChatConfig.findOne({ groupChatId: groupChatId }).exec();
 
   if (config) {
-    let key = generateRandomToken(64)
     config.key = key;
     await config.save();
 
-    console.log(`Key generated for ${groupChatId}.`);
+    console.log(`New key set for ${groupChatId}.`);
     return key;
   } else {
     throw new ApplicationError('Group chat doesn\'t exist.');
