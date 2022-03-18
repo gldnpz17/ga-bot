@@ -313,12 +313,13 @@ bot.addFunctionality(({ command }) => command?.name === 'generate-random-group-k
   });
 });
 
+// Handle the old command calls
 bot.addFunctionality(({ command }) => command?.name === 'generate-key', async ({ replyToken }) => {
   await lineClient.replyMessage(replyToken, {
     type: 'text',
     text: 'The bot now supports setting a custom group key. Please use the new `@gb set-group-key <new-key>` command, or `@gb generate-random-group-key` for the old behavior (randomly-generated group key).'
   });
-})
+});
 
 // Revoke auth sessions.
 bot.addFunctionality(event => event.command?.name === 'revoke-auth-sessions', async (event) => {
