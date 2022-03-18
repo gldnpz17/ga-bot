@@ -288,7 +288,7 @@ bot.addFunctionality(({ command }) => command?.name === 'set-group-key', async (
   if (!/^[\w-]{8,64}$/.test(newKey)) {
     await lineClient.replyMessage(event.replyToken, {
       type: 'text',
-      text: 'Currently, group key can only contain alphanumeric characters and "-". Key must be longer than 8 characters and no more than 64 characters.'
+      text: 'Currently, group key can only contain alphanumeric characters and the "-" symbol. Key must be longer than 8 characters and no more than 64 characters.'
     });
     
     return;
