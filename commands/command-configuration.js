@@ -316,7 +316,7 @@ bot.addFunctionality(({ command }) => command?.name === 'generate-random-group-k
 bot.addFunctionality(({ command }) => command?.name === 'generate-key', async ({ replyToken }) => {
   await lineClient.replyMessage(replyToken, {
     type: 'text',
-    text: 'The bot now supports setting a custom group key. Please use the new `@gb set-group-key <new-key>` command, or `@gb generate-random-group-key`for the old behavior (randomly-generated group key).'
+    text: 'The bot now supports setting a custom group key. Please use the new `@gb set-group-key <new-key>` command, or `@gb generate-random-group-key` for the old behavior (randomly-generated group key).'
   });
 })
 
