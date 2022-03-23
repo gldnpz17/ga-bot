@@ -92,7 +92,7 @@ bot.addFunctionality((event) => event.command?.name === 'list-configurations', a
 
   await lineClient.replyMessage(event.replyToken, {
     type: 'text',
-    text: JSON.stringify(result.slice(0, parseInt(number)), null, 2)
+    text: JSON.stringify(result.reverse().slice(0, parseInt(number)), null, 2)
   });
 });
 
