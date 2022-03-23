@@ -440,16 +440,22 @@ bot.addFunctionality(event => event.type === 'message' && ['image', 'video', 'au
 bot.addFunctionality((event) => event.type === 'message' && event.message.type === 'text', async (event) => {  
   await configureUnunsendUseCase.logMessage(event.timestamp, event.source, event.message);
 
-  const reply = await processMessageUseCase.replyToMessage(event.source.groupId, event.message.text);
+  const replyObj = await processMessageUseCase.replyToMessage(event.source.groupId, event.message.text);
 
-  console.log(`Received reply: ${reply.text ?? reply}. Sending...`);
-  if (reply !== null) {
-    console.log(`Replying to message. replyToken: ${event.replyToken}. reply: ${reply.text ?? reply}`);
+  console.log(`Received reply: ${
+    replyObj.originalContentUrl
+    ? `image (${replyObj.originalContentUrl})`
+    : replyObj.text
+  }. Sending...`);
+
+  if (replyObj !== null) {
+    console.log(`Replying to message. replyToken: ${event.replyToken}. reply: ${
+      replyObj.originalContentUrl
+      ? `image (${replyObj.originalContentUrl})`
+      : replyObj.text
+    }`);
     
-    await lineClient.replyMessage(event.replyToken, {
-      type: 'text',
-      text: reply
-    });
+    await lineClient.replyMessage(event.replyToken, replyObj);
   }
 });
 

@@ -44,8 +44,10 @@ module.exports.addConfiguration = async (groupChatId, configItem) => {
   if ((configItem.regex === null || configItem.regex === undefined) && (configItem.cronExpression === null || configItem.cronExpression === undefined)) {
     throw new ApplicationError('Invalid configuration. both \'regex\' and \'cronExpression\' are empty.');
   };
-  if (configItem.reply === null || configItem.reply === undefined) {
-    throw new ApplicationError('Invalid configuration. \'reply\' can\'t be empty.');
+  if ((configItem.reply === null || configItem.reply === undefined) && (configItem.replyImgUrl === null || configItem.replyImgUrl === undefined)) {
+    // Can use either the reply text or the reply image URL
+  
+    throw new ApplicationError('Invalid configuration. Either \'reply\' or \'replyImgUrl\' must be provided.');
   };
 
   //Validate regex.
@@ -65,6 +67,8 @@ module.exports.addConfiguration = async (groupChatId, configItem) => {
       throw new ApplicationError('Invalid cron expression.');
     }
   }
+
+  // TODO: Validate the image URL
 
   let chatConfig = await Models.GroupChatConfig.findOne({ groupChatId: groupChatId }).exec();
 

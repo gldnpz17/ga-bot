@@ -20,6 +20,18 @@ module.exports.replyToMessage = async (groupChatId, message) => {
     let configIndex = chatConfig.configs.findIndex(config => stringToRegex(config.regex).test(message));
     
     if (configIndex !== -1) {
+      const imageUrl = chatConfig.configs[configIndex].replyImgUrl;
+      if (imageUrl) {
+        console.log(`Replied to '${message}' with an image from URL '${imageUrl}'`);
+
+        // FIXME: This will probably fail if the image size is above 1 MB
+        return {
+          type: 'image',
+          originalContentUrl: imageUrl,
+          previewImageUrl: imageUrl // TODO: Don't use the same img URL, but compress this one instead
+        };
+      }
+
       const matches = message.match(stringToRegex(chatConfig.configs[configIndex].regex));
       let reply = chatConfig.configs[configIndex].reply;
 
@@ -28,8 +40,8 @@ module.exports.replyToMessage = async (groupChatId, message) => {
           reply = reply.replaceAll(`$${matchIndex}`, matches[matchIndex]);
       }
 
-      console.log(`Replied to \'${message}\' with \'${reply}\'.`);
-      return reply;
+      console.log(`Replied to '${message}' with '${reply}'.`);
+      return { type: 'text', text: reply };
     } else {
       return null;
     }
