@@ -79,11 +79,20 @@ bot.addFunctionality((event) => event.command?.name === 'add-configuration', asy
 
 // List configurations.
 bot.addFunctionality((event) => event.command?.name === 'list-configurations', async (event) => {
-  let result = await configureBotUseCase.listConfigurations(event.source.groupId);
+  const [number] = event.command.args;
+  if (!number) {
+    await lineClient.replyMessage(event.replyToken, {
+      type: 'text',
+      text: 'No amount supplied!'
+    });
+    return;
+  }
+
+  const result = await configureBotUseCase.listConfigurations(event.source.groupId);
 
   await lineClient.replyMessage(event.replyToken, {
     type: 'text',
-    text: JSON.stringify(result, null, 2)
+    text: JSON.stringify(result.slice(0, parseInt(number)), null, 2)
   });
 });
 
