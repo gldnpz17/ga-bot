@@ -20,7 +20,7 @@ module.exports.replyToMessage = async (groupChatId, message) => {
     let configIndex = chatConfig.configs.findIndex(config => stringToRegex(config.regex).test(message));
     
     if (configIndex !== -1) {
-      const imageUrl = chatConfig.configs[configIndex].replyImgUrl;
+      const imageUrl = chatConfig.configs[configIndex].replyImageUrl;
       if (imageUrl) {
         console.log(`Replied to '${message}' with an image from URL '${imageUrl}'`);
 

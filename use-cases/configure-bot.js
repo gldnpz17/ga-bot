@@ -44,10 +44,10 @@ module.exports.addConfiguration = async (groupChatId, configItem) => {
   if ((configItem.regex === null || configItem.regex === undefined) && (configItem.cronExpression === null || configItem.cronExpression === undefined)) {
     throw new ApplicationError('Invalid configuration. both \'regex\' and \'cronExpression\' are empty.');
   };
-  if ((configItem.reply === null || configItem.reply === undefined) && (configItem.replyImgUrl === null || configItem.replyImgUrl === undefined)) {
+  if ((configItem.reply === null || configItem.reply === undefined) && (configItem.replyImageUrl === null || configItem.replyImageUrl === undefined)) {
     // Can use either the reply text or the reply image URL
   
-    throw new ApplicationError('Invalid configuration. Either \'reply\' or \'replyImgUrl\' must be provided.');
+    throw new ApplicationError('Invalid configuration. Either \'reply\' or \'replyImageUrl\' must be provided.');
   };
 
   //Validate regex.
