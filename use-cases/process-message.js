@@ -23,28 +23,12 @@ module.exports.replyToMessage = async (groupChatId, message) => {
       const matches = message.match(stringToRegex(chatConfig.configs[configIndex].regex));
       let reply = chatConfig.configs[configIndex].reply;
 
-      // Substitute with regex capture groups
+      // Substitute with regex capture groups (naive method?)
       for (let matchIndex = 1; matchIndex < matches.length; ++matchIndex) {
           reply = reply.replaceAll(`$${matchIndex}`, matches[matchIndex]);
       }
 
-      // Pick up detected emoji IDs from the reply template
-      const emojiRegex = /\$emoji\(([a-z\d]+)\/(\d+)\)/gi;
-      const emojisData = [...reply.matchAll(emojiRegex)];
-      
-      // Strip all references to the emoji IDs on the actual reply, and leave just a single placeholder for each emojis
-      reply = reply.replaceAll(emojiRegex, '$');
-      placeholderIndices = [...reply.matchAll(/\$/g)].map((match) => match.index);
-      emojis = emojisData.map(([, productId, emojiId], emojiIndex) => ({
-        index: placeholderIndices[emojiIndex],
-        productId,
-        emojiId
-      }));
-
       console.log(`Replied to \'${message}\' with \'${reply}\'.`);
-      if (emojisData.length > 0) {
-          return { text: reply, emojis };
-      }
       return reply;
     } else {
       return null;

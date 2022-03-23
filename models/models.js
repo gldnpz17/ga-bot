@@ -8,7 +8,8 @@ const groupChatConfigSchema = new mongoose.Schema({
     configName: String,
     regex: String,
     cronExpression: String,
-    reply: String
+    reply: String,
+    replyImageUrl: String
   }],
   customTags: [{
     tagName: String,
