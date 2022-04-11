@@ -82,7 +82,7 @@ module.exports.search = async (groupId, keywords) => {
   
   const schedules = await Models.Schedule.find({
     $text: {
-      $search: keywords,
+      $search: `"${keywords}"`,
       $caseSensitive: false
     }
   }).lean().exec()
