@@ -43,7 +43,7 @@ bot.err(async (event, err) => {
 });
 
 // Initialize group chat.
-bot.addFunctionality((event) => event.type === 'join', async (event) => {
+bot.registerFunctionality((event) => event.type === 'join', async (event) => {
   await configureBotUseCase.initializeConversation(event.source.groupId);
     
   await lineClient.replyMessage(event.replyToken, {
@@ -53,12 +53,12 @@ bot.addFunctionality((event) => event.type === 'join', async (event) => {
 });
 
 // Erase data when kicked out of group chat.
-bot.addFunctionality((event) => event.type === 'leave', async (event) => {
+bot.registerFunctionality((event) => event.type === 'leave', async (event) => {
   configureBotUseCase.removeConversation(event.source.groupId);
 });
 
 // Coordinate conversion.
-bot.addFunctionality((event) => /^konversi .*/.test(event.command?.raw), async (event) => {
+bot.registerFunctionality((event) => /^konversi .*/.test(event.command?.raw), async (event) => {
   console.log(`converting coordinates. argument: ${event.command.raw}`);
 
   await lineClient.replyMessage(event.replyToken, {
@@ -68,7 +68,7 @@ bot.addFunctionality((event) => /^konversi .*/.test(event.command?.raw), async (
 });
 
 // Add configuration.
-bot.addFunctionality((event) => event.command?.name === 'add-configuration', async (event) => {
+bot.registerFunctionality((event) => event.command?.name === 'add-configuration', async (event) => {
   await configureBotUseCase.addConfiguration(event.source.groupId, JSON.parse(event.command.body));
 
   await lineClient.replyMessage(event.replyToken, {
@@ -78,7 +78,7 @@ bot.addFunctionality((event) => event.command?.name === 'add-configuration', asy
 });
 
 // List configurations.
-bot.addFunctionality((event) => event.command?.name === 'list-configurations', async (event) => {
+bot.registerFunctionality((event) => event.command?.name === 'list-configurations', async (event) => {
   const [number] = event.command.args;
   if (!number) {
     await lineClient.replyMessage(event.replyToken, {
@@ -97,7 +97,7 @@ bot.addFunctionality((event) => event.command?.name === 'list-configurations', a
 });
 
 // Remove configurations.
-bot.addFunctionality((event) => event.command?.name === 'remove-configuration', async (event) => {
+bot.registerFunctionality((event) => event.command?.name === 'remove-configuration', async (event) => {
   console.log(`Attempting to remove configuration ${event.command.args[0]}`);
   await configureBotUseCase.removeConfiguration(event.source.groupId, event.command.args[0]);
 
@@ -108,7 +108,7 @@ bot.addFunctionality((event) => event.command?.name === 'remove-configuration', 
 });
 
 // Set nickname.
-bot.addFunctionality(event => event.command?.name === 'set-nickname', async (event) => {
+bot.registerFunctionality(event => event.command?.name === 'set-nickname', async (event) => {
   let nickname = event.command.args[0];
 
   console.log(`Attempting to set nickname ${nickname} for group ${event.source.groupId}.`);
@@ -122,7 +122,7 @@ bot.addFunctionality(event => event.command?.name === 'set-nickname', async (eve
 });
 
 // Initialize counter.
-bot.addFunctionality(event => event.command?.name === 'initialize-counter' || event.command?.name === 'ic', async (event) => {
+bot.registerFunctionality(event => event.command?.name === 'initialize-counter' || event.command?.name === 'ic', async (event) => {
   let label = event.command.args[0];
   
   console.log(`Attempting to initialize ${label} counter for ${event.source.userId}.`);
@@ -136,7 +136,7 @@ bot.addFunctionality(event => event.command?.name === 'initialize-counter' || ev
 });
 
 // Set counter value.
-bot.addFunctionality(event => event.command?.name === 'set-counter' || event.command?.name === 'sc', async (event) => {
+bot.registerFunctionality(event => event.command?.name === 'set-counter' || event.command?.name === 'sc', async (event) => {
   let label = event.command.args[0];
   let amount = event.command.args[1];
 
@@ -151,7 +151,7 @@ bot.addFunctionality(event => event.command?.name === 'set-counter' || event.com
 });
 
 // Add counter.
-bot.addFunctionality(event => event.command?.name === 'add-counter' || event.command?.name === 'ac', async (event) => {
+bot.registerFunctionality(event => event.command?.name === 'add-counter' || event.command?.name === 'ac', async (event) => {
   let label = event.command.args[0];
   let amount = event.command.args[1];
 
@@ -166,7 +166,7 @@ bot.addFunctionality(event => event.command?.name === 'add-counter' || event.com
 });
 
 // Reset counter.
-bot.addFunctionality(event => event.command?.name === 'reset-counter' || event.command?.name === 'rc', async (event) => {
+bot.registerFunctionality(event => event.command?.name === 'reset-counter' || event.command?.name === 'rc', async (event) => {
   let label = event.command.args[0];
   
   console.log(`Attempting to reset the ${label} counter for user ${event.source.userId}`);
@@ -180,7 +180,7 @@ bot.addFunctionality(event => event.command?.name === 'reset-counter' || event.c
 });
 
 // View counter value
-bot.addFunctionality(event => event.command?.name === 'view-counter' || event.command?.name === 'vc', async (event) => {
+bot.registerFunctionality(event => event.command?.name === 'view-counter' || event.command?.name === 'vc', async (event) => {
   let label = event.command.args[0]
 
   console.log(`Attempting to show ${label} counter's value for user ${event.source.userId}`);
@@ -194,7 +194,7 @@ bot.addFunctionality(event => event.command?.name === 'view-counter' || event.co
 });
 
 // View counter history
-bot.addFunctionality(event => event.command?.name === 'history-counter' || event.command?.name === 'hc', async (event) => {
+bot.registerFunctionality(event => event.command?.name === 'history-counter' || event.command?.name === 'hc', async (event) => {
   let label = event.command.args[0];
 
   console.log(`Attempting to show ${label} counter's history for user ${event.source.userId}`);
@@ -213,14 +213,14 @@ bot.addFunctionality(event => event.command?.name === 'history-counter' || event
 });
 
 // Un-unsend
-bot.addFunctionality((event) => event.type === 'unsend', async (event) => {
+bot.registerFunctionality((event) => event.type === 'unsend', async (event) => {
   await configureUnunsendUseCase.pushUnunsend(event.source.groupId, event.unsend.messageId);
   
   console.log(`message ${event.unsend.messageId} is added to the unsend log`);
 });
 
 // Show unsent messages
-bot.addFunctionality((event) => event.command?.name === 'ununsend', async (event) => {
+bot.registerFunctionality((event) => event.command?.name === 'ununsend', async (event) => {
   let amount = event.command.args[0];
 
   let queryStartTime = performance.now()
@@ -246,7 +246,7 @@ bot.addFunctionality((event) => event.command?.name === 'ununsend', async (event
 });
 
 // Delete ununsent messages.
-bot.addFunctionality((event) => event.command?.name === 'unununsend', async (event) => {
+bot.registerFunctionality((event) => event.command?.name === 'unununsend', async (event) => {
   let amount = event.command.args[0];
   let reply = await configureUnunsendUseCase.popUnunsend(event.source.groupId, Number.parseInt(amount), event.source.userId);
   
@@ -257,7 +257,7 @@ bot.addFunctionality((event) => event.command?.name === 'unununsend', async (eve
 });
 
 // Get schedulescraper by name.
-bot.addFunctionality((event) => event.command?.name === 'jadwalkuliah' || event.command?.name === "jk", async (event) => {
+bot.registerFunctionality((event) => event.command?.name === 'jadwalkuliah' || event.command?.name === "jk", async (event) => {
   let name = event.command.args?.join(" ");
 
   let reply = await schedulescraperUseCase.search(event.source.groupId, name);
@@ -268,7 +268,7 @@ bot.addFunctionality((event) => event.command?.name === 'jadwalkuliah' || event.
 });
 
 // Add schedulescraper batch command.
-bot.addFunctionality((event) => event.command?.name === 'add-jadwalkuliah', async (event) => {
+bot.registerFunctionality((event) => event.command?.name === 'add-jadwalkuliah', async (event) => {
   let items = JSON.parse(event.command.body);
 
   let reply = await schedulescraperUseCase.addProfile(event.source.groupId, items);
@@ -279,7 +279,7 @@ bot.addFunctionality((event) => event.command?.name === 'add-jadwalkuliah', asyn
 });
 
 // Delete schedulescraper batch command.
-bot.addFunctionality((event) => event.command?.name === 'remove-jadwalkuliah', async (event) => {
+bot.registerFunctionality((event) => event.command?.name === 'remove-jadwalkuliah', async (event) => {
   let name = event.command.args.join(" ");
 
   let reply = await schedulescraperUseCase.removeProfile(event.source.groupId, name);
@@ -290,7 +290,7 @@ bot.addFunctionality((event) => event.command?.name === 'remove-jadwalkuliah', a
 });
 
 // Set custom group key
-bot.addFunctionality(({ command }) => command?.name === 'set-group-key', async (event) => {
+bot.registerFunctionality(({ command }) => command?.name === 'set-group-key', async (event) => {
   const [newKey] = event.command.args;
 
   // Validate first (FIXME: This regex is still so small and dumb and wildly incomplete)
@@ -312,7 +312,7 @@ bot.addFunctionality(({ command }) => command?.name === 'set-group-key', async (
 });
 
 // Auto-generate new random group key/password
-bot.addFunctionality(({ command }) => command?.name === 'generate-random-group-key', async (event) => {
+bot.registerFunctionality(({ command }) => command?.name === 'generate-random-group-key', async (event) => {
   console.log(`Automatically generating a random new key for group: ${event.source.groupId}`);
   let key = await authenticationUseCase.resetKey(event.source.groupId);
 
@@ -323,7 +323,7 @@ bot.addFunctionality(({ command }) => command?.name === 'generate-random-group-k
 });
 
 // Handle the old command calls
-bot.addFunctionality(({ command }) => command?.name === 'generate-key', async ({ replyToken }) => {
+bot.registerFunctionality(({ command }) => command?.name === 'generate-key', async ({ replyToken }) => {
   await lineClient.replyMessage(replyToken, {
     type: 'text',
     text: 'The bot now supports setting a custom group key. Please use the new `@gb set-group-key <new-key>` command, or `@gb generate-random-group-key` for the old behavior (randomly-generated group key).'
@@ -331,7 +331,7 @@ bot.addFunctionality(({ command }) => command?.name === 'generate-key', async ({
 });
 
 // Revoke auth sessions.
-bot.addFunctionality(event => event.command?.name === 'revoke-auth-sessions', async (event) => {
+bot.registerFunctionality(event => event.command?.name === 'revoke-auth-sessions', async (event) => {
   await authenticationUseCase.revokeAuthSessions(event.source.groupId);
 
   await lineClient.replyMessage(event.replyToken, {
@@ -341,7 +341,7 @@ bot.addFunctionality(event => event.command?.name === 'revoke-auth-sessions', as
 });
 
 // Get archive size.
-bot.addFunctionality(event => event.type === 'message' && event.command?.name === 'check-storage-use', async (event) => {
+bot.registerFunctionality(event => event.type === 'message' && event.command?.name === 'check-storage-use', async (event) => {
   let { result, timeMillis } = await measurePerformanceAsync(async () => await calculateUsage(event.source.groupId));
 
   await lineClient.replyMessage(event.replyToken, {
@@ -351,7 +351,7 @@ bot.addFunctionality(event => event.type === 'message' && event.command?.name ==
 });
 
 // Send an XKCD image directly from the URL
-bot.addFunctionality(({ command }) => command?.name === 'get-xkcd', async ({ replyToken, command }) => {
+bot.registerFunctionality(({ command }) => command?.name === 'get-xkcd', async ({ replyToken, command }) => {
   const [comicNumber] = command.args;
 
   try {
@@ -387,7 +387,7 @@ bot.addFunctionality(({ command }) => command?.name === 'get-xkcd', async ({ rep
 });
 
 // Show help.
-bot.addFunctionality((event) => event.command?.name === 'help', async (event) => {
+bot.registerFunctionality((event) => event.command?.name === 'help', async (event) => {
   await lineClient.replyMessage(event.replyToken, {
     type: 'text',
     text: 'How to use:\nhttps://github.com/gldnpz17/bacod-bot\n\nRegex article:\nhttps://en.wikipedia.org/wiki/Regular_expression'
@@ -395,7 +395,7 @@ bot.addFunctionality((event) => event.command?.name === 'help', async (event) =>
 });
 
 // Unknown command.
-bot.addFunctionality((event) => event.command !== null && event.command !== undefined, async (event) => {
+bot.registerFunctionality((event) => event.command !== null && event.command !== undefined, async (event) => {
   await lineClient.replyMessage(event.replyToken, {
     type: 'text',
     text: 'Command unknown. Type `@BacodBot help` if you need some help.'
@@ -403,7 +403,7 @@ bot.addFunctionality((event) => event.command !== null && event.command !== unde
 });
 
 // Archive files.
-bot.addFunctionality(event => event.type === 'message' && ['image', 'video', 'audio', 'file'].includes(event.message.type), async (event) => {
+bot.registerFunctionality(event => event.type === 'message' && ['image', 'video', 'audio', 'file'].includes(event.message.type), async (event) => {
   let fileId = await archiveFile(event.source.groupId, event.message.id, event.timestamp, event.message?.fileName);
   
   await lineClient.replyMessage(event.replyToken, {
@@ -437,7 +437,7 @@ bot.addFunctionality(event => event.type === 'message' && ['image', 'video', 'au
 });
 
 // Reply to messages.
-bot.addFunctionality((event) => event.type === 'message' && event.message.type === 'text', async (event) => {  
+bot.registerFunctionality((event) => event.type === 'message' && event.message.type === 'text', async (event) => {  
   await configureUnunsendUseCase.logMessage(event.timestamp, event.source, event.message);
 
   const replyObj = await processMessageUseCase.replyToMessage(event.source.groupId, event.message.text);

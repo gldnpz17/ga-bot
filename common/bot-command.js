@@ -6,7 +6,7 @@ module.exports.BotCommand = class CommandPipeline {
     console.log('An error occured. This is the bot\'s default error handler. Consider implementing your own.');
   };
   
-  addFunctionality(condition, action) {
+  registerFunctionality(condition, action) {
     this.pipelineItems.push({
       condition,
       action/*: async (event, ...args) => {
