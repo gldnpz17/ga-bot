@@ -407,32 +407,8 @@ bot.registerFunctionality(event => event.type === 'message' && ['image', 'video'
   let fileId = await archiveFile(event.source.groupId, event.message.id, event.timestamp, event.message?.fileName);
   
   await lineClient.replyMessage(event.replyToken, {
-    type: 'flex',
-    altText: 'Open to see archived media',
-    contents: {
-      type: 'bubble',
-      size: 'nano',
-      body: {
-        type: 'box',
-        layout: 'horizontal',
-        paddingAll: 'sm',
-        contents: [
-          {
-            type: 'text',
-            text: 'Archived →',
-            align: 'center',
-            size: 'xxs',
-            color: '#1976D2',
-            weight: 'bold',
-            action: {
-              type: 'uri',
-              label: 'Archive URL',
-              uri: `https://${config.serverDomainName}/archive/${fileId}`
-            }
-          }
-        ]
-      }
-    }
+    type: 'text',
+    text: `📁️ Archived at ${config.serverDomainName}/archive/${fileId}`
   });
 });
 
