@@ -57,7 +57,7 @@ module.exports.archiveFile = async (groupChatId, messageId, timestamp, originalF
   do {
     fileId = generateRandomToken(11); // Inspired by the length of youtube video IDs
   }
-  while (Models.FileArchive.findOne({ fileId }).exec()); // Check for ID collision before proceeding
+  while (await Models.FileArchive.findOne({ fileId }).exec()); // Check for ID collision before proceeding
   
   let response = await downloadLineFile(messageId, config.fileArchiveDirectory, fileId);
   
