@@ -16,13 +16,13 @@ module.exports.initializeConversation = async (groupChatId) => {
 };
 
 module.exports.removeConversation = async (groupChatId) => {
-  await Models.GroupChatConfig.deleteOne({ groupChatId: groupChatId }).exec();
+  await Models.GroupChatConfig.deleteOne({ groupChatId }).exec();
 
   console.log(`Conversation removed. groupChatId: ${groupChatId}`);
 };
 
 module.exports.listConfigurations = async (groupChatId) => {
-  let chatConfig = await Models.GroupChatConfig.findOne({ groupChatId: groupChatId }).exec();
+  let chatConfig = await Models.GroupChatConfig.findOne({ groupChatId }).exec();
 
   if (chatConfig !== null) {
     console.log(`List of configs retrieved. configs: ${chatConfig.configs}`)
@@ -70,7 +70,7 @@ module.exports.addConfiguration = async (groupChatId, configItem) => {
 
   // TODO: Validate the image URL
 
-  let chatConfig = await Models.GroupChatConfig.findOne({ groupChatId: groupChatId }).exec();
+  let chatConfig = await Models.GroupChatConfig.findOne({ groupChatId }).exec();
 
   // If there's already a config with the same name, remove the old one.
   let index = chatConfig.configs.findIndex(config => config.configName === configItem.configName);
@@ -90,7 +90,7 @@ module.exports.addConfiguration = async (groupChatId, configItem) => {
 };
 
 module.exports.removeConfiguration = async (groupChatId, configItemName) => {
-  let chatConfig = await Models.GroupChatConfig.findOne({ groupChatId: groupChatId }).exec();
+  let chatConfig = await Models.GroupChatConfig.findOne({ groupChatId }).exec();
 
   let index = chatConfig.configs.findIndex(config => config.configName === configItemName);
   if (index !== -1) {

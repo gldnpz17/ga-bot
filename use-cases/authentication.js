@@ -6,7 +6,7 @@ const generateRandomToken = require('../utilities/generate-random-token');
 
 // Still defaults to a randomly-generated key if the `key` param is not supplied
 module.exports.resetKey = async (groupChatId, key = generateRandomToken(64)) => {
-  let config = await Models.GroupChatConfig.findOne({ groupChatId: groupChatId }).exec();
+  let config = await Models.GroupChatConfig.findOne({ groupChatId }).exec();
 
   if (config) {
     config.key = key;
@@ -20,7 +20,7 @@ module.exports.resetKey = async (groupChatId, key = generateRandomToken(64)) => 
 }
 
 module.exports.login = async (key) => {
-  let config = await Models.GroupChatConfig.findOne({ key: key }).exec();
+  let config = await Models.GroupChatConfig.findOne({ key }).exec();
 
   if (config) {
     let token = generateRandomToken(256);
@@ -39,11 +39,11 @@ module.exports.login = async (key) => {
 }
 
 module.exports.getAuthSession = async (token) => {
-  let session = await Models.AuthSession.findOne({ token: token }).exec();
+  let session = await Models.AuthSession.findOne({ token }).exec();
 
   return session;
 }
 
 module.exports.revokeAuthSessions = async (groupChatId) => {
-  let sessions = await Models.AuthSession.deleteMany({ groupChatId: groupChatId });
+  let sessions = await Models.AuthSession.deleteMany({ groupChatId });
 }

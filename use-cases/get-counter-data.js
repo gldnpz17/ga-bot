@@ -1,7 +1,7 @@
 const Models = require('../models/models');
 
 const getCounterProfile = async (userId) => {
-  let profile = await Models.CounterProfile.findOne({ userId: userId }).exec();
+  let profile = await Models.CounterProfile.findOne({ userId }).exec();
 
   if (profile === null || profile === undefined) {
     throw new ApplicationError('Record not found. Please make sure you have at least 1 counter.');

@@ -2,7 +2,7 @@ const ApplicationError = require('../common/application-error');
 const Models = require('../models/models');
 
 module.exports.addCustomTag = async (groupChatId, tagName, userIds) => {
-  let chatConfig = await Models.GroupChatConfig.findOne({ groupChatId: groupChatId }).exec();
+  let chatConfig = await Models.GroupChatConfig.findOne({ groupChatId }).exec();
 
   if (chatConfig === null || chatConfig === undefined) {
     throw new Error(`Config not found. groupChatId: ${groupdChatId}`);
@@ -36,7 +36,7 @@ module.exports.addCustomTag = async (groupChatId, tagName, userIds) => {
 };
 
 module.exports.deleteCustomTag = async (groupChatId, tagName) => {
-  let chatConfig = await Models.GroupChatConfig.findOne({ groupChatId: groupChatId }).exec();
+  let chatConfig = await Models.GroupChatConfig.findOne({ groupChatId }).exec();
 
   if (chatConfig === null || chatConfig === undefined) {
     throw new Error(`Config not found. groupChatId: ${groupdChatId}`);
