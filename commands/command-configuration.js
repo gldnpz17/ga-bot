@@ -408,7 +408,7 @@ bot.registerFunctionality(event => event.type === 'message' && ['image', 'video'
   
   await lineClient.replyMessage(event.replyToken, {
     type: 'text',
-    text: `📁️ Archived at ${config.serverDomainName}/archive/${fileId}`
+    text: `📁️ https://${config.serverDomainName}/archive/${fileId}`
   });
 });
 
