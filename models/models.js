@@ -64,7 +64,7 @@ messageHistorySchema.index({
 
 const authSessionSchema = new mongoose.Schema({
   token: String,
-  groupChatId: String
+  groupChatIds: [String]
 });
 
 const fileArchiveSchema = new mongoose.Schema({

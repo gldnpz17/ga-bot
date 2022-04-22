@@ -51,6 +51,10 @@ module.exports.getArchivedFile = async (fileId) => {
   return await Models.FileArchive.findOne({ fileId }).exec();
 }
 
+module.exports.getArchivedFiles = async (groupChatId, start=0, count=32) => {
+  return await Models.FileArchive.find({ groupChatId }).skip(start).limit(count).exec();
+}
+
 module.exports.archiveFile = async (groupChatId, messageId, timestamp, originalFilename) => {
   let fileId;
 

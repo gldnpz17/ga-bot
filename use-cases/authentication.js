@@ -19,20 +19,30 @@ module.exports.resetKey = async (groupChatId, key = generateRandomToken(64)) => 
   }
 }
 
-module.exports.login = async (key) => {
+module.exports.login = async (key, existingToken=null) => {
   let config = await Models.GroupChatConfig.findOne({ key }).exec();
 
   if (config) {
-    let token = generateRandomToken(256);
+    if (existingToken) {
+      let session = await Models.AuthSession.findOne({ token: existingToken }).exec();
 
-    let session = new Models.AuthSession({
-      token: token,
-      groupChatId: config.groupChatId
-    });
+      if (!session.groupChatIds.includes(config.groupChatId)) session.groupChatIds.push(config.groupChatId);
 
-    await session.save();
+      await session.save();
 
-    return token;
+      return existingToken;
+    } else {
+      let token = generateRandomToken(256);
+
+      let session = new Models.AuthSession({
+        token: token,
+        groupChatIds: [config.groupChatId]
+      });
+  
+      await session.save();
+  
+      return token;
+    }
   } else {
     return null;
   }

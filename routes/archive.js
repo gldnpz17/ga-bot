@@ -3,8 +3,24 @@ let express = require('express');
 const config = require('../config');
 const path = require('path');
 const { authentication } = require('../middlewares/authentication');
-const { getArchivedFile } = require('../use-cases/archive-file');
+const { getArchivedFile, getArchivedFiles } = require('../use-cases/archive-file');
 let router = express.Router();
+
+router.get('/files/:groupChatId', cookieParser(), authentication, async (req, res) => {
+  const { groupChatId } = req.params
+
+  if (!req.authSession.groupChatIds.includes(groupChatId)) {
+    res.status(403).send({
+      message: 'You are not allowed to access this group chat\'s data'
+    })
+
+    return
+  }
+
+  const { start, count } = req.query
+
+  res.json(await getArchivedFiles(groupChatId, start, count))
+})
 
 router.get('/:fileId', cookieParser(), authentication, async (req, res) => {
   console.log(`Archived file requested: ${req.params.fileId}`);
@@ -13,7 +29,7 @@ router.get('/:fileId', cookieParser(), authentication, async (req, res) => {
   if (file) {
     console.log('File found. Authorizing.');
     // Only allow group chat members to access this file.
-    if (file.groupChatId === req.authSession.groupChatId) {
+    if (req.authSession.groupChatIds.includes(groupChatId)) {
       console.log(`Sending file: ${file.fileId}`);
       
       res.download(
