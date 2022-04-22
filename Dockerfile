@@ -16,6 +16,7 @@ WORKDIR /app/frontend
 
 ENV BUILD_PATH=/app/public
 
+RUN npm install --production
 RUN npm run build
 
 #run app
