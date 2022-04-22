@@ -26,9 +26,11 @@ module.exports.login = async (key, existingToken=null) => {
     if (existingToken) {
       let session = await Models.AuthSession.findOne({ token: existingToken }).exec();
 
-      if (!session.groupChatIds.includes(config.groupChatId)) session.groupChatIds.push(config.groupChatId);
+      if (!session.groupChatIds.includes(config.groupChatId)) {
+        session.groupChatIds.push(config.groupChatId);
 
-      await session.save();
+        await session.save();
+      }
 
       return existingToken;
     } else {

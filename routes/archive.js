@@ -19,7 +19,7 @@ router.get('/files/:groupChatId', cookieParser(), authentication, async (req, re
 
   const { start, count } = req.query
 
-  res.json(await getArchivedFiles(groupChatId, start, count))
+  res.json(await getArchivedFiles(groupChatId, parseInt(start), parseInt(count)))
 })
 
 router.get('/:fileId', cookieParser(), authentication, async (req, res) => {
