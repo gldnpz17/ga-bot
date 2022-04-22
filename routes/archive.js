@@ -22,6 +22,20 @@ router.get('/files/:groupChatId', cookieParser(), authentication, async (req, re
   res.json(await getArchivedFiles(groupChatId, parseInt(start), parseInt(count)))
 })
 
+router.get('/:fileId/metadata', cookieParser(), authentication, async (req, res) => {
+  const { fileId } = req.params
+
+  if (!req.authSession.groupChatIds.includes(fileId)) {
+    res.status(403).send({
+      message: 'You are not allowed to access this group chat\'s data'
+    })
+
+    return
+  }
+
+  res.json(await getArchivedFile(fileId))
+})
+
 router.get('/:fileId', cookieParser(), authentication, async (req, res) => {
   console.log(`Archived file requested: ${req.params.fileId}`);
   let file = await getArchivedFile(req.params.fileId);
