@@ -46,6 +46,7 @@ app.use('/status', statusRouter);
 app.use('/api', apiRouter);
 app.use('/archive', archiveRouter);
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('*', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 app.use((err, req, res, next) => {
   console.log(err.message);
   console.log(JSON.stringify(err.stack));
