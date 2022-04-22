@@ -12,7 +12,7 @@ router.post('/login', limiter, express.json(), cookieParser(), async (req, res) 
   let dto = req.body;
 
   if (dto.key) {
-    let authToken = await authenticationUseCase.login(dto.key, req.cookies['auth-token']);
+    let authToken = await authenticationUseCase.login(dto.key, req.cookies['Auth-Token']);
 
     if (authToken) {
       res.cookie('Auth-Token', authToken, {
