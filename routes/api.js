@@ -4,6 +4,7 @@ const authenticationUseCase = require('../use-cases/authentication');
 const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
 const { authentication } = require('../middlewares/authentication');
+const config = require('../config');
 
 const limiter = rateLimit({
   max: 60
