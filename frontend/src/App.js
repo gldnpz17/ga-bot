@@ -10,7 +10,7 @@ function App() {
   const [selectedGroupChatId, setSelectedGroupChatId] = useState("")
 
   const { data, isLoading, isError } = useQuery('group-chat-ids', 
-    async () => await (await fetch('https://gabot.gldnpz.com/api/auth/group-chats')).json())
+    async () => await (await fetch('/api/auth/group-chats')).json())
 
   return (
     <div className="App page-bg min-h-full">
@@ -25,10 +25,10 @@ function App() {
         <div className="flex-grow" />
         {isError
           ? <p>Error fetching group chats</p>
-          : <select value={selectedGroupChatId} onChange={(event) => {
-            event.preventDefault()
-            setSelectedGroupChatId(event.target.value)
-          }}>
+          : <select defaultValue={selectedGroupChatId} onChange={(event) => {
+              event.preventDefault()
+              setSelectedGroupChatId(event.target.value)
+            }}>
               {isLoading
                 ? <option>Loading...</option>
                 : <>
