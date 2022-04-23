@@ -4,10 +4,12 @@ import { Routes, Route, BrowserRouter, Outlet, Link } from "react-router-dom"
 import LoginPage from './pages/LoginPage';
 import NotFoundPage from './pages/NotFoundPage';
 import { useRef, useState } from 'react';
-import { QueryClientProvider, QueryClient, useQuery } from "react-query"
+import { QueryClientProvider, useQueryClient, QueryClient, useQuery } from "react-query"
 
 function App() {
   const [selectedGroupChatId, setSelectedGroupChatId] = useState("")
+
+  const client = useQueryClient()
 
   const { data, isLoading, isError } = useQuery('group-chat-ids', 
     async () => await (await fetch('/api/auth/group-chats')).json())
@@ -25,9 +27,10 @@ function App() {
         <div className="flex-grow" />
         {isError
           ? <p>Error fetching group chats</p>
-          : <select defaultValue={selectedGroupChatId} onChange={(event) => {
+          : <select value={selectedGroupChatId} onChange={(event) => {
               event.preventDefault()
               setSelectedGroupChatId(event.target.value)
+              client.invalidateQueries('archive')
             }}>
               {isLoading
                 ? <option>Loading...</option>
