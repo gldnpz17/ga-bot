@@ -27,7 +27,7 @@ function App() {
         <div className="flex-grow" />
         {isError
           ? <p>Error fetching group chats</p>
-          : <select value={selectedGroupChatId} onChange={(event) => {
+          : <select defaultValue={selectedGroupChatId} onChange={(event) => {
               event.preventDefault()
               setSelectedGroupChatId(event.target.value)
               client.invalidateQueries('archive')
