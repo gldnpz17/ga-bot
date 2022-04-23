@@ -16,7 +16,7 @@ const FileArchivePage = ({ groupChatId }) => {
     isFetching,
     isFetchingNextPage,
     status,
-  } = useInfiniteQuery(['archive', 'files'], fetchFiles, {
+  } = useInfiniteQuery(['archive', 'files', groupChatId], fetchFiles, {
     getNextPageParam: (lastPage) => lastPage.nextCursor,
   })
  
