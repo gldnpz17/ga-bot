@@ -26,13 +26,15 @@ const FileArchivePage = ({ groupChatId }) => {
     <p>Error: {error.message}</p>
   ) : (
     <>
-      {data.pages.map((files, i) => (
-        <React.Fragment key={i}>
-          {files.map(file => (
-            <FileCard title={file.originalFilename} timestamp={file.timestamp} />
-          ))}
-        </React.Fragment>
-      ))}
+      <div className="grid grid-cols-4 gap-4 p-4">
+        {data.pages.map((files, i) => (
+          <React.Fragment key={i}>
+            {files.map(file => (
+              <FileCard title={file.originalFilename} timestamp={file.timestamp} />
+            ))}
+          </React.Fragment>
+        ))}
+      </div>
       <div>
         <button
           onClick={() => fetchNextPage()}
