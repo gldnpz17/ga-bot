@@ -6,6 +6,7 @@ const LoginPage = () => {
 
     const response = await fetch({
       method: 'GET',
+      url: 'https://gabot.gldnpz.com/api/login',
       headers: {
         'Content-Type': 'application/json',
       },
