@@ -6,7 +6,7 @@ const FILES_PER_FETCH = 32
 
 const FileArchivePage = ({ groupChatId }) => {
   const fetchFiles = async ({ pageParam = 0 }) => 
-    await (await fetch(`https://gabot.gldnpz.com/api/archive/files/${groupChatId}?start=${pageParam * FILES_PER_FETCH}&count=${FILES_PER_FETCH}`)).json()
+    await (await fetch(`https://gabot.gldnpz.com/archive/files/${groupChatId}?start=${pageParam * FILES_PER_FETCH}&count=${FILES_PER_FETCH}`)).json()
  
   const {
     data,
