@@ -25,14 +25,14 @@ function App() {
         <div className="flex-grow" />
         {isError
           ? <p>Error fetching group chats</p>
-          : <select name="pets" id="pet-select" value={selectedGroupChatId} onChange={(event) => setSelectedGroupChatId(event.target.value)}>
+          : <select value={selectedGroupChatId} onChange={(event) => setSelectedGroupChatId(event.target.value)}>
               {isLoading
                 ? <option>Loading...</option>
                 : <>
                   <option value="">Select a group chat</option>
                     {
-                      data.groupChats.map(({ id, groupName }) => (
-                        <option key={id} value={id}>{groupName}</option>
+                      data.groupChats.map(({ groupId, groupName }) => (
+                        <option key={groupId} value={groupId}>{groupName}</option>
                       ))
                     }
                   </>
