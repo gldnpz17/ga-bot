@@ -3,7 +3,7 @@ import FileArchivePage from './pages/FileArchivePage';
 import { Routes, Route, BrowserRouter, Outlet, Link } from "react-router-dom"
 import LoginPage from './pages/LoginPage';
 import NotFoundPage from './pages/NotFoundPage';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { QueryClientProvider, useQueryClient, QueryClient, useQuery } from "react-query"
 
 function App() {
@@ -13,6 +13,10 @@ function App() {
 
   const { data, isLoading, isError } = useQuery('group-chat-ids', 
     async () => await (await fetch('/api/auth/group-chats')).json())
+
+  useEffect(() => {
+    client.invalidateQueries('archive')
+  }, [selectedGroupChatId])
 
   return (
     <div className="App page-bg min-h-full">
@@ -30,7 +34,6 @@ function App() {
           : <select defaultValue={selectedGroupChatId} onChange={(event) => {
               event.preventDefault()
               setSelectedGroupChatId(event.target.value)
-              client.invalidateQueries('archive')
             }}>
               {isLoading
                 ? <option>Loading...</option>
