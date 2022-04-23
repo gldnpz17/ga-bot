@@ -9,7 +9,7 @@ import { QueryClientProvider, QueryClient, useQuery } from "react-query"
 function App() {
   const [selectedGroupChatId, setSelectedGroupChatId] = useState("")
 
-  const { data, isLoading } = useQuery('group-chat-ids', 
+  const { data, isLoading, isError } = useQuery('group-chat-ids', 
     async () => await (await fetch('https://gabot.gldnpz.com/api/auth/group-chats')).json())
 
   return (
@@ -23,19 +23,22 @@ function App() {
           <a href="emergency-chat">Emergency Chat</a>
         </div>
         <div className="flex-grow" />
-        <select name="pets" id="pet-select" value={selectedGroupChatId} onChange={(event) => setSelectedGroupChatId(event.target.value)}>
-          {isLoading
-            ? <option>Loading...</option>
-            : <>
-              <option value="">Select a group chat</option>
-                {
-                  data.groupChats.map(({ id, groupName }) => (
-                    <option key={id} value={id}>{groupName}</option>
-                  ))
-                }
-              </>
-          }
-        </select>
+        {isError
+          ? <p>Error fetching group chats</p>
+          : <select name="pets" id="pet-select" value={selectedGroupChatId} onChange={(event) => setSelectedGroupChatId(event.target.value)}>
+              {isLoading
+                ? <option>Loading...</option>
+                : <>
+                  <option value="">Select a group chat</option>
+                    {
+                      data.groupChats.map(({ id, groupName }) => (
+                        <option key={id} value={id}>{groupName}</option>
+                      ))
+                    }
+                  </>
+              }
+            </select>
+        }
       </div>
       <BrowserRouter>
         <Routes>
