@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
 const { authentication } = require('../middlewares/authentication');
 const config = require('../config');
+const axios = require('axios').default;
 
 const limiter = rateLimit({
   max: 60
