@@ -3,10 +3,25 @@ let router = express.Router();
 const authenticationUseCase = require('../use-cases/authentication');
 const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
+const { authentication } = require('../middlewares/authentication');
 
 const limiter = rateLimit({
   max: 60
 });
+
+router.get('/auth/group-chats', cookieParser(), authentication, async (req, res) => {
+  const groupChats = await Promise.all(req.authSession.groupChatIds.map(async (groupChatId) => {
+    const response = await axios.get(`https://api.line.me/v2/bot/group/${groupChatId}/summary`, {
+      headers: {
+        'Authorization': `Bearer ${config.channelAccessToken}`
+      }
+    });
+    
+    return response.data;
+  }))
+  
+  res.json({ groupChats })
+})
 
 router.post('/login', limiter, express.json(), cookieParser(), async (req, res) => {
   let dto = req.body;
