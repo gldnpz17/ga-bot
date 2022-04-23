@@ -4,9 +4,8 @@ const LoginPage = () => {
 
     const { key } = event.target
 
-    const response = await fetch({
+    const response = await fetch('/api/login', {
       method: 'GET',
-      url: 'https://gabot.gldnpz.com/api/login',
       headers: {
         'Content-Type': 'application/json',
       },
