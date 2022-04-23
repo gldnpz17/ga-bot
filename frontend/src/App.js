@@ -6,8 +6,6 @@ import NotFoundPage from './pages/NotFoundPage';
 import { useRef, useState } from 'react';
 import { QueryClientProvider, QueryClient, useQuery } from "react-query"
 
-const client = new QueryClient()
-
 function App() {
   const [selectedGroupChatId, setSelectedGroupChatId] = useState("")
 
@@ -39,15 +37,13 @@ function App() {
           }
         </select>
       </div>
-      <QueryClientProvider client={client}>
-        <BrowserRouter>
-          <Routes>
-            <Route path="login" element={<LoginPage />} />
-            <Route path="file-archive" element={<FileArchivePage groupChatId={selectedGroupChatId} />} />
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
-        </BrowserRouter>
-      </QueryClientProvider>      
+      <BrowserRouter>
+        <Routes>
+          <Route path="login" element={<LoginPage />} />
+          <Route path="file-archive" element={<FileArchivePage groupChatId={selectedGroupChatId} />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </BrowserRouter>    
     </div>
   );
 }
