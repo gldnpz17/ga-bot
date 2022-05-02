@@ -19,7 +19,7 @@ const line = require('@line/bot-sdk');
 const axios = require('axios').default;
 
 const Kuroshiro = require('kuroshiro').default;
-const KuromojiAnalyzer = require('kuroshiro-analyzer-kuromoji');
+const KuromojiAnalyzer = require('kuroshiro-analyzer-kuromoji').default;
 
 const { archiveFile, calculateUsage } = require('../use-cases/archive-file');
 const authenticationUseCase = require('../use-cases/authentication');
