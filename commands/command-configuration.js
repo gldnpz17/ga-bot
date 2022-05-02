@@ -393,13 +393,21 @@ bot.registerFunctionality(({ command }) => command?.name === 'get-xkcd', async (
 bot.registerFunctionality((event) => event.command?.name === 'to-romaji', async (event) => {
   const jpText = event.command.args.join(' ');
 
-  const kuroshiro = new Kuroshiro();
-  await kuroshiro.init(new KuromojiAnalyzer());
+  try {
+    const kuroshiro = new Kuroshiro();
+    await kuroshiro.init(new KuromojiAnalyzer());
 
-  await lineClient.replyMessage(event.replyToken, {
-    type: 'text',
-    text: await kuroshiro.convert(jpText, { to: 'romaji' })
-  });
+    await lineClient.replyMessage(event.replyToken, {
+      type: 'text',
+      text: await kuroshiro.convert(jpText, { to: 'romaji' })
+    });
+  }
+  catch (err) {
+    await lineClient.replyMessage(event.replyToken, {
+      type: 'text',
+      text: `Error: ${err.name} (${err.message})`
+    });
+  }
 });
 
 // Show help.
