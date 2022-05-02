@@ -17,6 +17,7 @@ const { measurePerformanceAsync } = require('../common/measure-performance');
 
 const line = require('@line/bot-sdk');
 const axios = require('axios').default;
+const wanakana = require('wanakana');
 
 const { archiveFile, calculateUsage } = require('../use-cases/archive-file');
 const authenticationUseCase = require('../use-cases/authentication');
@@ -384,6 +385,16 @@ bot.registerFunctionality(({ command }) => command?.name === 'get-xkcd', async (
         : `An error occured in obtaining XKCD #${comicNumber}`
     });
   }
+});
+
+// Convert japanese characters to romaji
+bot.registerFunctionality((event) => event.command?.name === 'to-romaji', async (event) => {
+  const jpText = event.command.args.join(' ');
+
+  await lineClient.replyMessage(event.replyToken, {
+    type: 'text',
+    text: wanakana.isJapanese(jpText) ? wanakana.toRomaji(jpText) : 'Error: Text doesn\'t contain any Japanese characters!'
+  });
 });
 
 // Show help.
