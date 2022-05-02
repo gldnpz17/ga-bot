@@ -18,8 +18,8 @@ const { measurePerformanceAsync } = require('../common/measure-performance');
 const line = require('@line/bot-sdk');
 const axios = require('axios').default;
 
-const Kuroshiro = require('kuroshiro').default;
-const KuromojiAnalyzer = require('kuroshiro-analyzer-kuromoji').default;
+// const Kuroshiro = require('kuroshiro').default;
+// const KuromojiAnalyzer = require('kuroshiro-analyzer-kuromoji').default;
 
 const { archiveFile, calculateUsage } = require('../use-cases/archive-file');
 const authenticationUseCase = require('../use-cases/authentication');
@@ -391,23 +391,27 @@ bot.registerFunctionality(({ command }) => command?.name === 'get-xkcd', async (
 
 // Convert japanese characters to romaji
 bot.registerFunctionality((event) => event.command?.name === 'to-romaji', async (event) => {
-  const jpText = event.command.args.join(' ');
+  // const jpText = event.command.args.join(' ');
 
-  try {
-    const kuroshiro = new Kuroshiro();
-    await kuroshiro.init(new KuromojiAnalyzer());
+  // try {
+  //   const kuroshiro = new Kuroshiro();
+  //   await kuroshiro.init(new KuromojiAnalyzer());
 
-    await lineClient.replyMessage(event.replyToken, {
-      type: 'text',
-      text: await kuroshiro.convert(jpText, { to: 'romaji' })
-    });
-  }
-  catch (err) {
-    await lineClient.replyMessage(event.replyToken, {
-      type: 'text',
-      text: `Error: ${err.name} (${err.message})`
-    });
-  }
+  //   await lineClient.replyMessage(event.replyToken, {
+  //     type: 'text',
+  //     text: await kuroshiro.convert(jpText, { to: 'romaji' })
+  //   });
+  // }
+  // catch (err) {
+  //   await lineClient.replyMessage(event.replyToken, {
+  //     type: 'text',
+  //     text: `Error: ${err.name} (${err.message})`
+  //   });
+  // }
+  await lineClient.replyMessage(event.replyToken, {
+    type: 'text',
+    text: 'Error: This feature is currently disabled'
+  });
 });
 
 // Show help.
