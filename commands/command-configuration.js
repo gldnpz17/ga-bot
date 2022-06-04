@@ -426,7 +426,7 @@ bot.registerFunctionality((event) => event.command?.name === 'help', async (even
 bot.registerFunctionality((event) => event.command !== null && event.command !== undefined, async (event) => {
   await lineClient.replyMessage(event.replyToken, {
     type: 'text',
-    text: `Command \`${event.command.raw}\` is unknown. Type \`@BacodBot help\` if you need some help.`
+    text: `Command \`${event.command.raw + event.command.body ? ('\n' + event.command.body) : ''}\` is unknown. Type \`@BacodBot help\` if you need some help.`
   });
 });
 
