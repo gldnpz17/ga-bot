@@ -1,7 +1,7 @@
 const ApplicationError = require('../common/application-error');
 const config = require('../config');
 const Models = require('../models/models');
-const configureScheduledTaskUseCase = require('./configure-scheduled-tasks');
+const configureScheduledTaskUseCase = {} //require('./configure-scheduled-tasks');
 const { default: cron } = require('cron-validate');
 
 module.exports.initializeConversation = async (groupChatId) => {

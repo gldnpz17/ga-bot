@@ -15,20 +15,22 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
-const webhookRouter = require('./routes/webhook');
 const statusRouter = require('./routes/status');
 const apiRouter = require('./routes/api');
 const archiveRouter = require('./routes/archive');
 const { requestLogger } = require('./middlewares/request-logger');
 
-const configureScheduledTasksUseCase = require('./use-cases/configure-scheduled-tasks');
+//const configureScheduledTasksUseCase = require('./use-cases/configure-scheduled-tasks');
 const { mkdir, mkdirSync } = require('fs');
+const { WebhookRouter } = require('./routes/webhook');
+const { LineMessagingService, LineWebhookHandler, MockLineMessagingService, MockLineWebhookHandler } = require('./services/line-messaging-service');
+const { BotCustomizationUseCase } = require('./use-cases/bot-customization');
 
 // Initialize directories.
 mkdirSync(config.fileArchiveDirectory, { recursive: true });
 
 // Initialize scheduled tasks.
-Models.GroupChatConfig.find({}).exec().then(groupChatConfigs => {
+/*Models.GroupChatConfig.find({}).exec().then(groupChatConfigs => {
   groupChatConfigs.map(groupChatConfig => {
     const { groupChatId } = groupChatConfig;
   
@@ -36,12 +38,26 @@ Models.GroupChatConfig.find({}).exec().then(groupChatConfigs => {
       configureScheduledTasksUseCase.scheduleMessage(groupChatId, configItem);
     });
   });
-});
+});*/
 
 const app = express();
 
+const lineConfig = {
+  channelAccessToken: config.channelAccessToken,
+  channelSecret: config.channelSecret
+}
+
+console.log(`Environment : ${config.environment}`)
+
+const messagingService = config.environment === 'production' 
+  ? new LineMessagingService(lineConfig, new BotCustomizationUseCase())
+  : new MockLineMessagingService()
+const webhookHandler = config.environment === 'production' 
+  ? new LineWebhookHandler(messagingService, lineConfig)
+  : new MockLineWebhookHandler(messagingService)
+
 app.use(logger('dev'));
-app.use('/webhook', webhookRouter);
+app.use('/webhook', (new WebhookRouter(webhookHandler)).getRouter());
 app.use('/status', statusRouter);
 app.use('/api', apiRouter);
 app.use('/archive', archiveRouter);

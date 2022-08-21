@@ -112,13 +112,13 @@ module.exports.popUnunsend = async (groupChatId, amount, initiatorId) => {
   return { count: successCount, notes: notes };*/
 };
 
-module.exports.logMessage = async (timestamp, source, message) => {
+module.exports.logMessage = async (timestamp, groupChatId, messageId, userId, text) => {
   let loggedMessage = new Models.MessageHistory({
-    groupChatId: source.groupId,
-    messageId: message.id,
-    timestamp: timestamp,
-    userId: source.userId,
-    text: message.text,
+    groupChatId,
+    messageId,
+    timestamp,
+    userId,
+    text,
     unsent: false
   });
 

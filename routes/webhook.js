@@ -1,40 +1,30 @@
 const config = require('../config');
-
-let express = require('express');
-let router = express.Router();
-
-const line = require('@line/bot-sdk');
-const lineConfig = {
-  channelAccessToken: config.channelAccessToken,
-  channelSecret: config.channelSecret
-}
-const lineClient = new line.Client(lineConfig);
-
-const { commandParser } = require('../middlewares/command-parser');
-const { requestLogger } = require('../middlewares/request-logger');
-
+const express = require('express');
 const { bot } = require('../commands/command-configuration');
+const ApplicationError = require('../common/application-error');
 
-router.post('/', line.middleware(lineConfig), requestLogger, commandParser, async (req, res, next) => {
-  req.body.events.map(async (event) => {
-    try {
-      let groupId = event.source.groupId;
-      if (groupId === null || groupId === undefined) {
-        await lineClient.replyMessage(event.replyToken, {
-          type: 'text',
-          text: 'This bot only works in group chats.'
-        });
-  
-        return;
-      }
-      
-      await bot.execute(event);
+class WebhookRouter {
+  constructor(webhookHandler) {
+    this.webhookHandler = webhookHandler
+  }
 
-      next();
-    } catch(err) {
-      next(err);
-    }
-  });
-});
+  getRouter() {
+    const router = express.Router();
 
-module.exports = router;
+    router.post('/', ...this.webhookHandler.getMiddlewares(), async (req, res, next) => {
+      await Promise.all(req.body.events.map(async (event) => {
+        try {
+          await bot.execute(event)
+        } catch(err) {
+          throw new ApplicationError(err.message)
+        }
+      }))
+
+      res.sendStatus(200)
+    })
+
+    return router
+  }
+}
+
+module.exports = { WebhookRouter }
