@@ -39,7 +39,7 @@ module.exports.unscheduleMessage = async (configItem) => {
   let index = tasks.findIndex(task => task.configName === configItem.configName);
 
   if (index !== -1) {
-    tasks[index].task.destroy();
+    tasks[index].task.stop();
 
     tasks.splice(index, 1);
   }
