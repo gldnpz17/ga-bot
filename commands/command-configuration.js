@@ -184,7 +184,7 @@ bot.registerFunctionality([CommandEvent])(event => event.isCommand('ununsend'), 
   let amount = event.command.args[0];
 
   let queryStartTime = performance.now()
-  let messages = await configureUnunsendUseCase.dumpUnunsend(event.source.groupId, Number.parseInt(amount));
+  let messages = await configureUnunsendUseCase.dumpUnunsend(event.groupChatId, Number.parseInt(amount));
   let queryEndTime = performance.now()
 
   let reply = '';
