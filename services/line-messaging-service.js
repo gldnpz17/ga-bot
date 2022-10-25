@@ -272,7 +272,7 @@ class LineWebhookHandler {
       this.lineMiddleware,
       async (req, _, next) => {
         try {
-          req.body.events = await Promise.all(req.body.events.map(this.parseEvent))
+          req.body.events = await Promise.all(req.body.events.map(this.parseEvent.bind(this)))
 
           next()
         } catch (err) {
