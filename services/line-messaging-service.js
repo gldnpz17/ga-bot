@@ -118,6 +118,8 @@ class LineMessagingService {
   reply() {
     const messages = []
 
+    const client = this.client
+
     const messageFunctions = {
       text(text) {
         messages.push({
@@ -137,7 +139,7 @@ class LineMessagingService {
         return messageFunctions
       },
       async send() {
-        await this.client.replyMessage(replyToken, messages)
+        await client.replyMessage(replyToken, messages)
       }
     }
 
