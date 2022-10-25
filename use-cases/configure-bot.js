@@ -82,7 +82,7 @@ module.exports.addConfiguration = async (groupChatId, configItem) => {
   chatConfig.configs.push(configItem);
 
   // Setup task schedule
-  await configureScheduledTaskUseCase.scheduleMessage(groupChatId, configItem);
+  // await configureScheduledTaskUseCase.scheduleMessage(groupChatId, configItem);
 
   await chatConfig.save();
 
