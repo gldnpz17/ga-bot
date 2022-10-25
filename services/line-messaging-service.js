@@ -120,7 +120,7 @@ class LineMessagingService {
 
     const messageFunctions = {
       text(text) {
-        messages.append({
+        messages.push({
           type: 'text',
           text
         })
@@ -128,7 +128,7 @@ class LineMessagingService {
         return messageFunctions
       },
       image(url) {
-        messages.append({
+        messages.push({
           type: 'image',
           originalContentUrl: url,
           previewImageUrl: url
