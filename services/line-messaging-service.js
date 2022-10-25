@@ -137,7 +137,7 @@ class LineMessagingService {
         return messageFunctions
       },
       async send() {
-        await lineClient.replyMessage(replyToken, messages)
+        await this.client.replyMessage(replyToken, messages)
       }
     }
 
