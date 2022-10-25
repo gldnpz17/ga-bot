@@ -119,6 +119,7 @@ class LineMessagingService {
     const messages = []
 
     const client = this.client
+    console.log(client)
 
     const messageFunctions = {
       text(text) {
