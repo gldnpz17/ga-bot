@@ -17,7 +17,7 @@ class MessageEvent extends Event { // Replyable
     this.messageId = messageId
     this.replyToken = replyToken
     this.messagingService = messagingService
-    this.reply = messagingService.reply
+    this.reply = messagingService.reply(replyToken)
     this.userId = userId
   }
 }
@@ -94,11 +94,11 @@ class UnsendMessageEvent extends Event {
 }
 
 class JoinEvent extends Event {
-  constructor(timestamp, groupChatId, messagingService) {
+  constructor(timestamp, groupChatId, replyToken, messagingService) {
     super(timestamp, groupChatId)
     this.type = 'join'
 
-    this.reply = messagingService.reply
+    this.reply = messagingService.reply(replyToken)
   }
 }
 
@@ -115,11 +115,11 @@ class LineMessagingService {
     this.botCustomization = botCustomizationUseCase
   }
 
-  reply() {
+  reply = (replyToken) => () => {
     const messages = []
 
     const client = this.client
-    console.log(client)
+    console.log(this)
 
     const messageFunctions = {
       text(text) {
@@ -167,9 +167,21 @@ class LineMessagingService {
   }
 }
 
+class MockClient {
+  replyMessage(replyToken, messages) {
+    console.log(`Messages sent with replyToken: ${replyToken}`)
+    console.log(JSON.stringify(messages))
+  }
+}
+
 class MockLineMessagingService {
-  reply() {
+  constructor() {
+    this.client = new MockClient()
+  }
+
+  reply = (replyToken) => () => {
     const messages = []
+    const client = this.client
 
     const messageFunctions = {
       text(text) {
@@ -190,8 +202,7 @@ class MockLineMessagingService {
         return messageFunctions
       },
       async send() {
-        console.log('Messages sent!')
-        console.log(JSON.stringify(messages))
+        client.replyMessage(replyToken, messages)
       }
     }
 
@@ -329,7 +340,8 @@ class MockLineWebhookHandler {
       case 'unsend':
         return new UnsendMessageEvent(timestamp, groupChatId, event.unsend.messageId)
       case 'join':
-        return new JoinEvent(timestamp, groupChatId, this.messagingService)
+        const replyToken = event.replyToken
+        return new JoinEvent(timestamp, groupChatId, replyToken, this.messagingService)
       case 'leave':
         return new LeaveEvent(timestamp, groupChatId)
       default:
