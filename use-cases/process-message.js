@@ -3,6 +3,8 @@ const Models = require('../models/models');
 module.exports.replyToMessage = async (groupChatId, message) => {
   let chatConfig = await Models.GroupChatConfig.findOne({ groupChatId }).exec();
 
+  if (chatConfig.mute) return null
+
   if (chatConfig.configs.length !== 0) {
     const stringToRegex = (input) => {
       // Parse input

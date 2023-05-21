@@ -330,6 +330,16 @@ bot.registerFunctionality([CommandEvent])(event => event.isCommand('to-romaji'),
   await event.reply().text('Error: This feature is currently disabled').send()
 });
 
+bot.registerFunctionality([CommandEvent])(event => event.isCommand('mute'), async (event) => {
+  await configureBotUseCase.mute(event.groupChatId)
+  await event.reply().text('Bot muted').send()
+})
+
+bot.registerFunctionality([CommandEvent])(event => event.isCommand('unmute'), async (event) => {
+  await configureBotUseCase.unmute(event.groupChatId)
+  await event.reply().text('Bot unmuted').send()
+})
+
 // Show help.
 bot.registerFunctionality([CommandEvent])(event => event.isCommand('help'), async (event) => {
   await event.reply().text('How to use:\nhttps://github.com/gldnpz17/bacod-bot\n\nRegex article:\nhttps://en.wikipedia.org/wiki/Regular_expression').send()
