@@ -5,13 +5,13 @@ const configureScheduledTaskUseCase = {} //require('./configure-scheduled-tasks'
 const { default: cron } = require('cron-validate');
 
 module.exports.mute = async (groupChatId) => {
-  const groupChat = await Models.GroupChatConfig.findOne({ groupChatId })
+  const groupChat = await Models.GroupChatConfig.findOne({ groupChatId }).exec()
   groupChat.mute = true
   groupChat.save()
 }
 
 module.exports.unmute = async (groupChatId) => {
-  const groupChat = await Models.GroupChatConfig.findOne({ groupChatId })
+  const groupChat = await Models.GroupChatConfig.findOne({ groupChatId }).exec()
   groupChat.mute = false
   groupChat.save()
 }
