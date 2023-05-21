@@ -4,6 +4,7 @@ const groupChatConfigSchema = new mongoose.Schema({
   groupChatId: String,
   nickname: String,
   key: String,
+  mute: Boolean,
   configs: [{
     configName: String,
     regex: String,
